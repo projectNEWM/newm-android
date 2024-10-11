@@ -89,6 +89,7 @@ val initialScreen = Screen.NFTLibrary
 internal fun NewmApp(
     logger: NewmAppLogger,
     eventLogger: NewmAppEventLogger,
+    showRecordStore: Boolean = false //update once backend supports special access
 ) {
     val context = LocalContext.current
     val backstack = rememberSaveableBackStack {
@@ -166,6 +167,7 @@ internal fun NewmApp(
                         NewmBottomNavigation(
                             currentRootScreen = currentRootScreen,
                             eventLogger = eventLogger,
+                            showRecordStore = showRecordStore,
                             onNavigationSelected = {
                                 circuitNavigator.resetRoot(it)
                             }
@@ -188,6 +190,7 @@ internal fun NewmApp(
 internal fun NewmBottomNavigation(
     currentRootScreen: CircuitScreen?,
     eventLogger: NewmAppEventLogger,
+    showRecordStore: Boolean = false,
     onNavigationSelected: (Screen) -> Unit
 ) {
     Column(Modifier.height(76.dp)) {
@@ -209,6 +212,20 @@ internal fun NewmBottomNavigation(
                     onNavigationSelected(Screen.NFTLibrary)
                 },
             )
+            if (showRecordStore) {
+                HomeBottomNavigationItem(
+                    selected = currentRootScreen == Screen.RecordStore,
+                    iconResId = R.drawable.ic_recordstore_active,
+                    labelResId = R.string.record_store,
+                    selectedIconBrush = AccountIconGradient,
+                    selectedLabelColor = DarkPink,
+                    onClick = {
+                        eventLogger.logClickEvent(AppScreens.RecordStoreScreen.RECORD_STORE_BUTTON)
+                        eventLogger.logPageLoad(AppScreens.RecordStoreScreen.name)
+                        onNavigationSelected(Screen.RecordStore)
+                    },
+                )
+            }
             HomeBottomNavigationItem(
                 selected = currentRootScreen == Screen.UserAccount,
                 iconResId = R.drawable.ic_profile,

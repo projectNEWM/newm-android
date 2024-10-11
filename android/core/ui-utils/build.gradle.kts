@@ -28,9 +28,10 @@ android {
 dependencies {
     api(project(Modules.coreResources))
 
+    implementation(libs.androidx.browser)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.material)
     implementation(libs.androidx.material.icons.extended)
-    implementation(project(Modules.coreTheme))
     implementation(project(":shared"))
+    implementation(project(Modules.coreTheme))
 }

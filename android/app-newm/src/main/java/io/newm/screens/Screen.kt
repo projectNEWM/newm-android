@@ -10,6 +10,8 @@ sealed class Screen(val screenName: String) : CircuitScreen {
 
     data object UserAccount : Screen(screenName = AppScreens.AccountScreen.name)
 
+    data object RecordStore : Screen(screenName = AppScreens.RecordStoreScreen.name)
+
     data object NFTLibrary : Screen(screenName = AppScreens.NFTLibraryScreen.name)
 
     data object Welcome : Screen(screenName = AppScreens.WelcomeScreen.name)

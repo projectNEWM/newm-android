@@ -27,6 +27,9 @@ import io.newm.screens.library.NFTLibraryState
 import io.newm.screens.profile.edit.ProfileEditPresenter
 import io.newm.screens.profile.edit.ProfileEditUi
 import io.newm.screens.profile.edit.ProfileEditUiState
+import io.newm.screens.recordstore.RecordStorePresenter
+import io.newm.screens.recordstore.RecordStoreScreenUi
+import io.newm.screens.recordstore.RecordStoreState
 import io.newm.screens.profile.view.ProfilePresenter
 import io.newm.screens.profile.view.ProfileUi
 import io.newm.screens.profile.view.ProfileUiState
@@ -93,6 +96,14 @@ class HomeActivity : ComponentActivity() {
                     )
                 }
 
+                is Screen.RecordStore -> ui<RecordStoreState> { state, modifier ->
+                    RecordStoreScreenUi(
+                        state = state,
+                        modifier = modifier,
+                        eventLogger = eventLogger
+                    )
+                }
+
                 is NFTLibrary -> ui<NFTLibraryState> { state, modifier ->
                     NFTLibraryScreenUi(
                         state = state,
@@ -133,6 +144,12 @@ class HomeActivity : ComponentActivity() {
                 }.value
 
                 is NFTLibrary -> inject<NFTLibraryPresenter> {
+                    parametersOf(
+                        navigator
+                    )
+                }.value
+
+                is Screen.RecordStore -> inject<RecordStorePresenter> {
                     parametersOf(
                         navigator
                     )

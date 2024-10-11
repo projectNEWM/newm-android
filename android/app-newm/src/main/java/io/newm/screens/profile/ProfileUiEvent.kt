@@ -4,7 +4,7 @@ import com.slack.circuit.runtime.CircuitUiEvent
 
 sealed interface ProfileUiEvent : CircuitUiEvent
 sealed interface ProfileEditUiEvent : CircuitUiEvent
-
+sealed interface RecordStoreUiEvent : CircuitUiEvent
 /** Profile UI Events */
 data object OnDisconnectWallet : ProfileUiEvent
 data object OnEditProfile : ProfileUiEvent
