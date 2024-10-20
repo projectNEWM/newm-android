@@ -17,9 +17,6 @@ import com.slack.circuit.runtime.ui.Ui
 import io.newm.core.theme.NewmTheme
 import io.newm.screens.Screen
 import io.newm.screens.Screen.NFTLibrary
-import io.newm.screens.profile.view.ProfilePresenter
-import io.newm.screens.profile.view.ProfileUiState
-import io.newm.screens.profile.view.ProfileUi
 import io.newm.screens.forceupdate.ForceAppUpdatePresenter
 import io.newm.screens.forceupdate.ForceAppUpdateState
 import io.newm.screens.forceupdate.ForceAppUpdateUi
@@ -30,9 +27,14 @@ import io.newm.screens.library.NFTLibraryState
 import io.newm.screens.profile.edit.ProfileEditPresenter
 import io.newm.screens.profile.edit.ProfileEditUi
 import io.newm.screens.profile.edit.ProfileEditUiState
+import io.newm.screens.profile.view.ProfilePresenter
+import io.newm.screens.profile.view.ProfileUi
+import io.newm.screens.profile.view.ProfileUiState
 import io.newm.shared.NewmAppLogger
 import io.newm.shared.public.analytics.NewmAppEventLogger
 import io.newm.shared.public.analytics.events.AppScreens
+import io.newm.shared.public.featureflags.FeatureFlagManager
+import io.newm.shared.public.featureflags.FeatureFlags
 import io.newm.utils.ForceAppUpdateViewModel
 import io.newm.utils.ui
 import org.koin.android.ext.android.inject
@@ -43,10 +45,15 @@ class HomeActivity : ComponentActivity() {
     private val logger: NewmAppLogger by inject()
     private val forceAppUpdateViewModel: ForceAppUpdateViewModel by inject()
     private val eventLogger: NewmAppEventLogger by inject()
+    private val featureFlagManager : FeatureFlagManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        if(featureFlagManager.isEnabled(FeatureFlags.MarketPlace)) {
+            // TODO show/hide marketplace
+            logger.info("HomeActivity", "MarketPlace feature is enabled")
+        }
         super.onCreate(savedInstanceState)
         setContent {
             NewmTheme(darkTheme = true) {

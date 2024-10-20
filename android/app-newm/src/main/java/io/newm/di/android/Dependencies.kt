@@ -19,11 +19,14 @@ import io.newm.screens.library.NFTLibraryPresenter
 import io.newm.screens.profile.edit.ProfileEditPresenter
 import io.newm.screens.profile.view.ProfilePresenter
 import io.newm.shared.config.NewmSharedBuildConfig
+import io.newm.shared.public.featureflags.FeatureFlagManager
+import io.newm.utils.AndroidFeatureFlagManager
 import io.newm.utils.ForceAppUpdateViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val viewModule = module {
+    single<FeatureFlagManager> { AndroidFeatureFlagManager(get(), get()) }
     single { ForceAppUpdateViewModel(get(), get()) }
     single { RecaptchaClientProvider() }
 

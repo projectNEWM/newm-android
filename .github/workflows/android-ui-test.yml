@@ -43,6 +43,7 @@ jobs:
           echo "RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}" >> ./local.properties
           echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> ./local.properties
           echo "ANDROID_SENTRY_DSN=${{ secrets.ANDROID_SENTRY_DSN }}" >> ./local.properties
+          echo "LAUNCHDARKLY_MOBILE_KEY=${{ secrets.LAUNCHDARKLY_MOBILE_KEY }}" >> ./local.properties
           echo "auth.token=${{ secrets.ANDROID_SENTRY_AUTH_TOKEN}}" >> ./sentry.properties
 
       - name: create google-services.json
