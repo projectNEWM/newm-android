@@ -9,10 +9,14 @@ import io.newm.shared.NewmAppLogger
 import io.newm.shared.public.featureflags.FeatureFlagManager
 import io.newm.shared.public.usecases.UserDetailsUseCase
 import io.newm.shared.public.usecases.UserSessionUseCase
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import kotlin.time.Duration.Companion.seconds
 
 class AppLaunchGhostActivity : ComponentActivity() {
     private val tag = "AppLaunchGhostActivity"
@@ -21,6 +25,7 @@ class AppLaunchGhostActivity : ComponentActivity() {
     private val featureFlagMager: FeatureFlagManager by inject()
     private val logger: NewmAppLogger by inject()
 
+    @OptIn(FlowPreview::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
@@ -30,9 +35,11 @@ class AppLaunchGhostActivity : ComponentActivity() {
         if (userSession.isLoggedIn()) {
             lifecycleScope.launch {
                 try {
-                    val user =
-                        userDetailsUseCase.fetchLoggedInUserDetailsFlow().filterNotNull().first()
-                    featureFlagMager.setUserId(user.id)
+                    userDetailsUseCase.fetchLoggedInUserDetailsFlow()
+                        .filterNotNull()
+                        .onEach(featureFlagMager::setUser)
+                        .timeout(3.seconds)
+                        .first()
                 } catch (e: Exception) {
                     logger.error(
                         tag,
