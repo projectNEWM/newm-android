@@ -33,6 +33,9 @@ class NewmSharedBuildConfigImpl: NewmSharedBuildConfig, KoinComponent {
         mode = defaultMode
     }
 
+    override val launchDarklyKey: String
+        get() = BuildConfig.LAUNCHDARKLY_MOBILE_KEY
+
     override val baseUrl: String
         get() = when (mode) {
             Mode.STAGING -> BuildConfig.STAGING_URL
@@ -55,6 +58,7 @@ class NewmSharedBuildConfigImpl: NewmSharedBuildConfig, KoinComponent {
 }
 
 interface NewmSharedBuildConfig {
+    val launchDarklyKey: String
     val baseUrl: String
     val sentryAuthToken: String
     val androidSentryDSN: String

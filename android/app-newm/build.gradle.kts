@@ -98,6 +98,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.launchdarkly.client)
     implementation(libs.play.services.auth)
     implementation(libs.recaptcha)
     implementation(libs.androidx.core.splashscreen)

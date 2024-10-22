@@ -1,14 +1,14 @@
+
 import io.newm.shared.NewmAppLogger
-import io.newm.shared.config.NewmSharedBuildConfig
-import io.newm.shared.internal.implementations.ForceAppUpdateUseCaseImpl
-import io.newm.shared.internal.repositories.RemoteConfigRepository
 import io.newm.shared.internal.api.models.MobileClientConfig
 import io.newm.shared.internal.api.models.MobileConfig
+import io.newm.shared.internal.implementations.ForceAppUpdateUseCaseImpl
+import io.newm.shared.internal.repositories.RemoteConfigRepository
 import io.newm.shared.public.usecases.ForceAppUpdateUseCase
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 
 class ForceAppUpdateUseCaseTest {
@@ -26,7 +26,7 @@ class ForceAppUpdateUseCaseTest {
         )
         val remoteConfigRepository = FakeRemoteConfigRepository(fakeConfig)
         logger = NewmAppLogger()
-        useCase = ForceAppUpdateUseCaseImpl(remoteConfigRepository, logger)
+        useCase = ForceAppUpdateUseCaseImpl(remoteConfigRepository)
     }
 
     @Test

@@ -117,6 +117,7 @@ buildConfig {
 	buildConfigField<String>("RECAPTCHA_SITE_KEY", properties.getProperty("RECAPTCHA_SITE_KEY").replace("\"", ""))
 	buildConfigField<String>("SENTRY_AUTH_TOKEN", properties.getProperty("SENTRY_AUTH_TOKEN").replace("\"", ""))
 	buildConfigField<String>("ANDROID_SENTRY_DSN", properties.getProperty("ANDROID_SENTRY_DSN").replace("\"", ""))
+	buildConfigField<String>("LAUNCHDARKLY_MOBILE_KEY", properties.getProperty("LAUNCHDARKLY_MOBILE_KEY").replace("\"", ""))
 }
 
 
