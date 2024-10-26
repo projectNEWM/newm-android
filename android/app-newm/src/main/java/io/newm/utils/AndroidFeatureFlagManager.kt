@@ -9,6 +9,7 @@ import com.launchdarkly.sdk.android.LDConfig.Builder.AutoEnvAttributes
 import io.newm.shared.config.NewmSharedBuildConfig
 import io.newm.shared.public.featureflags.FeatureFlag
 import io.newm.shared.public.featureflags.FeatureFlagManager
+import io.newm.shared.public.models.User
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -38,8 +39,11 @@ class AndroidFeatureFlagManager(
         return client.boolVariation(flag.key, default)
     }
 
-    override suspend fun setUserId(id: String) {
-        val ldContext = LDContext.builder(ContextKind.DEFAULT, id).build()
+    override suspend fun setUser(user: User) {
+        val ldContext = LDContext.builder(ContextKind.DEFAULT, user.id)
+            .set("email", user.email)
+            .name(user.nickname ?: user.email)
+            .build()
 
         client.identify(ldContext)
             .asDeferred()
