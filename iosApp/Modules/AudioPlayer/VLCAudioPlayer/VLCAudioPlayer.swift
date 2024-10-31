@@ -77,7 +77,6 @@ public class VLCAudioPlayer: ObservableObject {
 		fileManager.objectWillChange
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] in
-//				self?.objectWillChange.send()
 				self?.update()
 			}.store(in: &cancels)
 		

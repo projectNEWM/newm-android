@@ -4,7 +4,6 @@ import ModuleLinker
 import Resolver
 import shared
 import Network
-import Analytics
 
 @MainActor
 class MainViewModel: ObservableObject {

@@ -16,7 +16,6 @@ import UIKit
 struct LibraryView: View {
 	@StateObject private var viewModel = LibraryViewModel()
 	@State private var showFilter = false
-	static var count = 0
 
 	public var body: some View {
 		ZStack {

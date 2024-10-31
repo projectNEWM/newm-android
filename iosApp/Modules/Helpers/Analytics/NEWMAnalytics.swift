@@ -10,7 +10,7 @@ public class NEWMAnalytics {
 
 	func setup() {
 		NotificationCenter.default.publisher(for: shared.Notification().loginStateChanged)
-			.receive(on: RunLoop.main)
+			.receive(on: DispatchQueue.main)
 			.sink { _ in
 				Task { @MainActor in
 					let user = Resolver.resolve(UserDetailsUseCase.self)

@@ -204,7 +204,7 @@ extension PlayQueue {
 		case invalidIndex
 		case trackNotInQueue
 		
-		var errordDescription: String? {
+		var errorDescription: String? {
 			"There was an error playing the song."
 		}
 	}
