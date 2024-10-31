@@ -50,13 +50,15 @@ public class FileManagerService: ObservableObject {
 		}
 	}
 	
-	public func clearFile(at url: URL) {
-		do {
-			try FileManager.default.removeItem(at: try fileURL(forDownloadURL: url))
-			objectWillChange.send()
-		} catch {
-			errorLogger.logError("Error clearing documents directory: \(error)")
-		}
+	public func clearFile(at url: URL) async {
+		await Task {
+			do {
+				try FileManager.default.removeItem(at: try fileURL(forDownloadURL: url))
+				objectWillChange.send()
+			} catch {
+				errorLogger.logError("Error clearing documents directory: \(error)")
+			}
+		}.value
 	}
 	
 	public func download(url: URL, progressHandler: @escaping ProgressHandler) async throws {

@@ -2,7 +2,6 @@ import Foundation
 import shared
 import Utilities
 
-@MainActor
 struct PlayQueue {
 	var originalTracks: Set<NFTTrack> = [] {
 		didSet {
@@ -204,5 +203,9 @@ extension PlayQueue {
 		case queueIsEmpty
 		case invalidIndex
 		case trackNotInQueue
+		
+		var errordDescription: String? {
+			"There was an error playing the song."
+		}
 	}
 }

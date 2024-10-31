@@ -8,6 +8,7 @@ import Kingfisher
 import shared
 import Combine
 import Utilities
+import Analytics
 
 public struct ProfileView: View {
 	@StateObject private var viewModel = ProfileViewModel()
@@ -23,6 +24,7 @@ public struct ProfileView: View {
 			.autocorrectionDisabled(true)
 			.scrollDismissesKeyboard(.immediately)
 			.padding([.bottom, .leading, .trailing])
+			.analyticsScreen(name: AppScreens.AccountScreen().name)
 	}
 }
 

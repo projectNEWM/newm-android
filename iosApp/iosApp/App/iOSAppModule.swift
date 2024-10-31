@@ -14,6 +14,7 @@ import shared
 import Logging
 import Profile
 import Mocks
+import Analytics
 
 #if DEBUG
 enum MockMode {
@@ -39,7 +40,8 @@ struct iOSAppModule: Module {
 			FilesModule.shared,
 			LoggingModule.shared,
 			ProfileModule.shared,
-			MocksModule.shared
+			MocksModule.shared,
+			AnalyticsModule.shared
 		]
 	}()
 	
@@ -72,6 +74,7 @@ extension iOSAppModule {
 		Resolver.register {
 			UserDetailsUseCaseProvider().get() as UserDetailsUseCase
 		}
+				
 		modules.forEach { $0.registerAllServices() }
 	}
 

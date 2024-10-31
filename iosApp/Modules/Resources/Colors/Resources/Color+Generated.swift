@@ -54,6 +54,7 @@ public enum NEWMColor {
   public static let company = ColorAsset(name: "Company")
   public static let music = ColorAsset(name: "Music")
   public static let error = ColorAsset(name: "Error")
+  public static let success = ColorAsset(name: "Success")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 

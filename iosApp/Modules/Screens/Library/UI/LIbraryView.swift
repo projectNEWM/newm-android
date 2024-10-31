@@ -9,111 +9,146 @@ import ModuleLinker
 import Kingfisher
 import AudioPlayer
 import Mocks
+import Analytics
+import UIKit
 
+@MainActor
 struct LibraryView: View {
 	@StateObject private var viewModel = LibraryViewModel()
-	@State var showFilter = false
-	
+	@State private var showFilter = false
+	static var count = 0
+
 	public var body: some View {
-		NavigationView {
-			Group {
-				if viewModel.showLoading {
-					loadingView
-				} else if viewModel.showNoSongsMessage {
-					noSongsMessage
-				} else {
-					loadedView
+		ZStack {
+			NavigationView {
+				Group {
+					if viewModel.showLoading {
+						loadingView
+					} else if viewModel.showNoSongsMessage {
+						noSongsMessage
+					} else {
+						loadedView
+					}
 				}
-			}
-			.refreshable {
-				await viewModel.refresh()
-			}
-			.sheet(isPresented: .constant(viewModel.showCodeScanner), onDismiss: {
-				viewModel.scannerDismissed()
-			}) {
-				ConnectWalletToAccountScannerView {
-					viewModel.codeScanned()
+				.refreshable {
+					trackRefresh()
+					await viewModel.refresh()
 				}
-			}
-			.sheet(isPresented: $showFilter) {
-				filterView
-					.presentationDetents([.height(350)])
-			}
-			.alert(isPresented: .constant(viewModel.errors.currentError != nil), error: viewModel.errors.currentError) {
-				Button {
-					viewModel.errors.popFirstError()
-				} label: {
-					Text("Ok")
+				.sheet(isPresented: .constant(viewModel.showCodeScanner), onDismiss: {
+					viewModel.scannerDismissed()
+				}) {
+					ConnectWalletToAccountScannerView {
+						viewModel.codeScanned()
+					}
 				}
-			}
-			.navigationBarTitleDisplayMode(.inline)
-			.toolbar {
-				ToolbarItem(placement: .topBarLeading) {
-					Text(String.library)
-						.font(.newmTitle1)
-						.foregroundStyle(Gradients.libraryGradient.gradient)
+				.sheet(isPresented: $showFilter) {
+					filterView
+						.presentationDetents([.height(350)])
 				}
-				if viewModel.filteredSortedTracks.isEmpty == false {
-					ToolbarItem(placement: .topBarTrailing) {
-						Button(action: {
-							showFilter = true
-						}, label: {
-							Image("Filter Icon")
-								.resizable()
-								.renderingMode(.template)
-								.frame(width: 30, height: 30)
-						})
+				.alert(isPresented: .constant(viewModel.errors.currentError != nil), error: viewModel.errors.currentError) {
+					Button {
+						viewModel.errors.popFirstError()
+					} label: {
+						Text("Ok")
+					}
+				}
+				.navigationBarTitleDisplayMode(.inline)
+				.toolbar {
+					ToolbarItem(placement: .topBarLeading) {
+						Text(String.library)
+							.font(.newmTitle1)
+							.foregroundStyle(Gradients.libraryGradient.gradient)
+					}
+					if viewModel.filteredSortedTracks.isEmpty == false {
+						ToolbarItem(placement: .topBarTrailing) {
+							Button(action: {
+								showFilter = true
+							}, label: {
+								Image("Filter Icon")
+									.resizable()
+									.renderingMode(.template)
+									.frame(width: 40, height: 40)
+									.foregroundStyle(Gradients.mainPrimary)
+							})
+						}
 					}
 				}
 			}
+			
+			Color.black
+				.opacity(showFilter ? 0.5 : 0)
+				.animation(.easeInOut, value: showFilter)
+				.ignoresSafeArea()
 		}
+	}
+	
+	private func trackRefresh() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.NFTLibraryScreen().REFRESH_BUTTON,
+			screenName: AppScreens.NFTLibraryScreen().name,
+			properties: nil
+		)
 	}
 	
 	@ViewBuilder
 	fileprivate var noSongsMessage: some View {
-		ZStack {
-			VStack {
-				Text("Your library is empty.")
-					.font(
-						Font.custom("Inter", size: 24)
-							.weight(.bold)
-					)
-					.multilineTextAlignment(.center)
-					.foregroundColor(.white)
-					.frame(width: 358, alignment: .top)
-					.padding(.bottom)
-				
-				Text("Time to rescue it with your epic music stash!\nLet’s fill this up. 🎶")
-					.font(
-						Font.custom("Inter", size: 14)
-							.weight(.medium)
-					)
-					.multilineTextAlignment(.center)
-					.foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.57))
-					.frame(width: 358, alignment: .top)
-					.padding(.bottom)
-				
-				if viewModel.walletIsConnected {
-					Link(destination: URL(string: "https://newm.io/recordstore")!) {
-						Text("Visit Record Store")
-							.frame(maxWidth: .infinity)
-							.padding()
-							.background(Gradients.mainPrimary.opacity(0.08))
-							.foregroundColor(NEWMColor.midMusic.swiftUIColor)
-							.cornerRadius(8)
-					}
-				}
-			}
-			if viewModel.walletIsConnected == false {
+		ScrollView {
+			ZStack {
 				VStack {
-					Spacer()
-					ConnectWalletAlertView {
-						viewModel.connectWallet()
+					Text("Your library is empty.")
+						.font(
+							Font.custom("Inter", size: 24)
+								.weight(.bold)
+						)
+						.multilineTextAlignment(.center)
+						.foregroundColor(.white)
+						.frame(width: 358, alignment: .top)
+						.padding(.bottom)
+					
+					Text("Time to rescue it with your epic music stash!\nLet’s fill this up. 🎶")
+						.font(
+							Font.custom("Inter", size: 14)
+								.weight(.medium)
+						)
+						.multilineTextAlignment(.center)
+						.foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.57))
+						.frame(width: 358, alignment: .top)
+						.padding(.bottom)
+					
+					if viewModel.walletIsConnected {
+						Button {
+							trackRecordStore()
+							UIApplication.shared.open(URL(string: "https://newm.io/recordstore")!)
+						} label: {
+							Text("Visit Record Store")
+								.frame(maxWidth: .infinity)
+								.padding()
+								.background(Gradients.mainPrimary.opacity(0.08))
+								.foregroundColor(NEWMColor.midMusic())
+								.cornerRadius(8)
+						}
 					}
 				}
-				.padding()
+				if viewModel.walletIsConnected == false {
+					VStack {
+						Spacer()
+						ConnectWalletAlertView {
+							viewModel.connectWallet()
+						}
+					}
+					.padding()
+				}
 			}
 		}
+		.analyticsScreen(name: AppScreens.NFTLibraryEmptyWalletScreen().name)
+	}
+	
+	private func trackRecordStore() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.NFTLibraryEmptyWalletScreen().VISIT_RECORDS_BUTTON,
+			screenName: AppScreens.NFTLibraryEmptyWalletScreen().name,
+			properties: nil
+		)
 	}
 	
 	@ViewBuilder
@@ -124,80 +159,14 @@ struct LibraryView: View {
 	
 	@ViewBuilder
 	private var loadedView: some View {
-		NavigationView {
-			List {
-				ForEach(viewModel.filteredSortedTracks, id: \.id) { audioTrack in
-					row(for: audioTrack)
-						.frame(height: 40)
-						.padding(.leading, -6)
-						.padding([.bottom, .top], -1)
-						.swipeActions(allowsFullSwipe: false) {
-							Button {
-								viewModel.swipeAction(for: audioTrack)
-							} label: {
-								Text(viewModel.swipeText(for: audioTrack))
-							}
-						}
-				}
-				.listRowSeparator(.hidden)
-			}
+		List(viewModel.filteredSortedTracks) { track in
+			TrackRow(viewModel: TrackRowModel(track: track) { error in
+				viewModel.errors.append(error)
+			})
 		}
+		.listRowSeparator(.hidden)
 		.searchable(text: $viewModel.searchText, prompt: "Search")
-	}
-	
-	@ViewBuilder
-	fileprivate func row(for track: NFTTrack) -> some View {
-		Button(action: {
-			viewModel.trackTapped(track)
-		}) {
-			HStack {
-				KFImage(URL(string: track.imageUrl))
-					.placeholder {
-						Image.placeholder
-							.resizable()
-							.frame(width: 40, height: 40)
-							.clipShape(RoundedRectangle(cornerRadius: 4))
-					}
-					.setProcessor(DownsamplingImageProcessor(size: CGSize(width: 40, height: 40)))
-					.clipShape(RoundedRectangle(cornerRadius: 4))
-				
-				VStack(alignment: .leading, spacing: 3) {
-					Text(track.title)
-						.font(Font.interMedium(ofSize: 14))
-						.foregroundStyle(viewModel.trackIsPlaying(track) ? NEWMColor.pink() : .white)
-					HStack(alignment: .center, spacing: 4) {
-						if viewModel.trackIsDownloaded(track) {
-							Asset.Media.checkboxCircleFill.swiftUIImage
-						}
-						Text(track.artists.first ?? "")
-							.font(Font.inter(ofSize: 12))
-							.foregroundStyle(try! Color(hex: "8F8F91"))
-					}
-				}
-				.padding(.leading, 4)
-				
-				Spacer()
-				
-				progressView(for: track)
-			}
-			.foregroundStyle(.white)
-			.tag(track.id)
-		}
-	}
-	
-	@ViewBuilder
-	private func progressView(for track: NFTTrack) -> some View {
-		if let progress = viewModel.loadingProgress(for: track) {
-			if 0 < progress, progress < 1 {
-				Gauge(value: progress, in: 0...1) { }
-					.gaugeStyle(.accessoryCircularCapacity)
-					.scaleEffect(0.5)
-			} else {
-				ProgressView()
-			}
-		} else {
-			EmptyView()
-		}
+		.analyticsScreen(name: AppScreens.NFTLibraryScreen().name)
 	}
 	
 	@ViewBuilder
@@ -207,6 +176,7 @@ struct LibraryView: View {
 			VStack(alignment: .leading, spacing: 20) {
 				Text("Filter songs under")
 					.foregroundColor(.white)
+					.font(.inter(ofSize: 14))
 				
 				Button(action: {
 					viewModel.toggleLengthFilter()
@@ -227,7 +197,8 @@ struct LibraryView: View {
 				Text("Sort by")
 					.foregroundColor(.white)
 					.padding(.top)
-				
+					.font(.inter(ofSize: 14))
+
 				VStack(alignment: .leading, spacing: 10) {
 					Button(action: {
 						viewModel.titleSortTapped()
@@ -238,6 +209,7 @@ struct LibraryView: View {
 							.background(viewModel.titleSortSelected ? NEWMColor.midMusic().erased : Gradients.mainPrimaryLight.erased)
 							.foregroundColor(viewModel.titleSortSelected ? .black : NEWMColor.midMusic.swiftUIColor)
 							.cornerRadius(8)
+							.font(.interMedium(ofSize: 14))
 					}
 					
 					Button(action: {
@@ -249,6 +221,7 @@ struct LibraryView: View {
 							.background(viewModel.artistSortSelected ? NEWMColor.midMusic().erased : Gradients.mainPrimaryLight.erased)
 							.foregroundColor(viewModel.artistSortSelected ? .black : NEWMColor.midMusic.swiftUIColor)
 							.cornerRadius(8)
+							.font(.interMedium(ofSize: 14))
 					}
 					
 					Button(action: {
@@ -260,12 +233,17 @@ struct LibraryView: View {
 							.background(viewModel.durationSortSelected ? NEWMColor.midMusic().erased : Gradients.mainPrimaryLight.erased)
 							.foregroundColor(viewModel.durationSortSelected ? .black : NEWMColor.midMusic.swiftUIColor)
 							.cornerRadius(8)
+							.font(.interMedium(ofSize: 14))
 					}
 				}
 			}
 		}
 		.padding()
+		.padding(.top, 15)
 		.background(Color.black)
+		.clipShape(RoundedRectangle(cornerSize: CGSize(width: 20, height: 20)))
+		.ignoresSafeArea()
+		.analyticsScreen(name: AppScreens.NFTLibraryFilterScreen().name)
 	}
 	
 	@ViewBuilder
@@ -297,45 +275,15 @@ struct LibraryView: View {
 	}
 }
 
-#if DEBUG
-//#Preview {
-//	Resolver.root = .mock
-//	LibraryModule.shared.registerAllMockedServices(mockResolver: .root)
-//	MocksModule.shared.registerAllMockedServices(mockResolver: .mock)
-//	AudioPlayerModule.shared.registerAllServices()
-//	let useCase = $0.resolve(ConnectWalletUseCase.self)
-//	Resolver.root.register {
-//		Task {
-//			try await useCase.connect(walletConnectionId: "newm34r343g3g343833")
-//		}
-//		return useCase as ConnectWalletUseCase
-//	}
-//	return LibraryView()
-//		.preferredColorScheme(.dark)
-//		.tint(.white)
-//}
 
+
+#if DEBUG
 #Preview {
 	Resolver.root = .mock
 	LibraryModule.shared.registerAllMockedServices(mockResolver: .mock)
-	return LibraryView(showFilter: false)//.noSongsMessage
+	return LibraryView()//.noSongsMessage
 		.preferredColorScheme(.dark)
 		.tint(.white)
 		.background(.black)
 }
 #endif
-//
-//struct FilterView: View {
-//	@State var lengthFilterSelected = false
-//	@State var sortOption = "Title (A to Z)"
-//	@Environment(\.dismiss) var dismiss
-//
-//	static let titleAscen
-//
-//	var body: some View {
-//	}
-//}
-//
-//#Preview {
-//	FilterView()
-//}

@@ -7,15 +7,23 @@ import shared
 import AudioPlayer
 import Utilities
 import SharedExtensions
+import Analytics
 
 @MainActor
 class LibraryViewModel: ObservableObject {
 	@Published var searchText: String = "" {
 		didSet {
+			if oldValue.isEmpty {
+				trackSearchTapped()
+			}
 			sortAndFilterTracks()
 		}
 	}
 	@Published var errors = ErrorSet()
+	@Published private(set) var filteredSortedTracks: [NFTTrack] = []
+	@Published private(set) var showLoading: Bool = true
+	@Published private(set) var showCodeScanner: Bool = false
+	
 	var durationFilter: Int? {
 		set {
 			audioPlayer.durationFilter = newValue
@@ -23,7 +31,7 @@ class LibraryViewModel: ObservableObject {
 		}
 		get { audioPlayer.durationFilter }
 	}
-		
+	
 	private(set) var selectedSort: Sort {
 		set {
 			audioPlayer.sort = newValue
@@ -58,29 +66,29 @@ class LibraryViewModel: ObservableObject {
 	}
 	
 	private func sortAndFilterTracks() {
-		filteredSortedTracks = tracks
+		let filteredSortedTracks = tracks
 			.filter { track in
-				return track.isAboveDurationFilter(durationFilter) &&
+				track.isAboveDurationFilter(durationFilter) &&
 				track.containsSearchText(searchText)
 			}
 			.sorted(by: selectedSort.comparator)
+		
+		self.filteredSortedTracks = filteredSortedTracks
+		audioPlayer.setTracks(Set(filteredSortedTracks), playFirstTrack: false)
 	}
 	
-	@Published private(set) var route: LibraryRoute?
-	@Published private(set) var filteredSortedTracks: [NFTTrack] = []
-	@Published private var tracks: [NFTTrack] = [] {
+	private var tracks: [NFTTrack] = [] {
 		didSet {
 			sortAndFilterTracks()
 		}
 	}
-	@Published private(set) var showLoading: Bool = true
-	@Published private(set) var showCodeScanner: Bool = false
 	var walletIsConnected: Bool = false
 	
 	private var cancels: Set<AnyCancellable> = []
 	
 	@LazyInjected private var walletNFTTracksUseCase: any WalletNFTTracksUseCase
 	@LazyInjected private var hasWalletConnectionsUseCase: any HasWalletConnectionsUseCase
+	@LazyInjected private var syncWalletConnectionsUseCase: any SyncWalletConnectionsUseCase
 	@InjectedObject private var audioPlayer: VLCAudioPlayer
 	@LazyInjected private var logger: any ErrorReporting
 	
@@ -103,13 +111,6 @@ class LibraryViewModel: ObservableObject {
 			}
 			.store(in: &cancels)
 		
-		audioPlayer.objectWillChange
-			.receive(on: DispatchQueue.main)
-			.sink { [weak self] _ in
-				self?.objectWillChange.send()
-			}
-			.store(in: &cancels)
-		
 		Task { [weak self] in
 			guard let self else { return }
 			for await error in audioPlayer.errors.values {
@@ -118,15 +119,16 @@ class LibraryViewModel: ObservableObject {
 		}
 		
 		Task { [weak self] in
+			try await self?.syncWalletConnectionsUseCase.syncWalletConnectionsFromNetworkToDevice()
 			self?.walletIsConnected = try await self?.hasWalletConnectionsUseCase.hasWalletConnections().boolValue == true
 			await self?.refresh()
 		}
 	}
-	
+		
 	var showNoSongsMessage: Bool {
 		tracks.isEmpty || walletIsConnected == false
 	}
-	
+		
 	func refresh() async {
 		defer {
 			showLoading = false
@@ -158,79 +160,6 @@ class LibraryViewModel: ObservableObject {
 	
 	func connectWallet() {
 		showCodeScanner = true
-	}
-	
-	private func downloadTrack(_ track: NFTTrack) {
-		Task {
-			do {
-				try await audioPlayer.downloadTrack(track)
-			} catch {
-				let userDidCancelCode = -999
-				if (error as NSError).code != userDidCancelCode {
-					self.errors.append(NEWMError(errorDescription: "Could not download \"\(track.title)\".  Please try again later."))
-				}
-			}
-		}
-	}
-	
-	func removeDownloadedTrack(_ track: NFTTrack) {
-		audioPlayer.removeDownloadedSong(track)
-	}
-	
-	func trackTapped(_ track: NFTTrack) {
-		if audioPlayer.playQueueIsEmpty {
-			audioPlayer.setTracks(Set(tracks), playFirstTrack: false)
-		}
-		audioPlayer.seek(toTrack: track)
-	}
-	
-	func swipeAction(for track: NFTTrack) {
-		switch downloadState(for: track) {
-		case .downloaded:
-			audioPlayer.removeDownloadedSong(track)
-		case .downloading:
-			audioPlayer.cancelDownload(track)
-		case nil:
-			downloadTrack(track)
-		}
-	}
-	
-	func swipeText(for track: NFTTrack) -> String {
-		switch downloadState(for: track) {
-		case .downloaded:
-			"Delete download"
-		case .downloading:
-			"Cancel"
-		case nil:
-			"Download"
-		}
-	}
-	
-	func loadingProgress(for track: NFTTrack) -> Double? {
-		audioPlayer.loadingProgress[track]
-	}
-	
-	func trackIsPlaying(_ track: NFTTrack) -> Bool {
-		audioPlayer.trackIsPlaying(track)
-	}
-	
-	func trackIsDownloaded(_ track: NFTTrack) -> Bool {
-		audioPlayer.trackIsDownloaded(track)
-	}
-	
-	private enum DownloadState {
-		case downloaded
-		case downloading
-	}
-	
-	private func downloadState(for track: NFTTrack) -> DownloadState? {
-		return if trackIsDownloaded(track) {
-			.downloaded
-		} else if loadingProgress(for: track) == nil {
-			nil
-		} else {
-			.downloading
-		}
 	}
 	
 	func titleSortTapped() {
@@ -295,5 +224,17 @@ extension LibraryViewModel {
 		} else {
 			false
 		}
+	}
+}
+
+extension NFTTrack: Sendable {}
+
+extension LibraryViewModel {
+	func trackSearchTapped() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.NFTLibraryScreen().SEARCH_BUTTON,
+			screenName: AppScreens.NFTLibraryScreen().name,
+			properties: nil
+		)
 	}
 }

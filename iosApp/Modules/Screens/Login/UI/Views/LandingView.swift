@@ -25,10 +25,6 @@ public struct LandingView: View {
 						createAccountView.backButton()
 					case .codeConfirmation:
 						codeConfirmationView.backButton()
-					case .nickname:
-						nicknameView.backButton()
-					case .done:
-						doneView
 					case .login:
 						loginView.backButton()
 					case .forgotPassword:

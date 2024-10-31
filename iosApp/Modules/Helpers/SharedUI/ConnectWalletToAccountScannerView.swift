@@ -1,9 +1,10 @@
 import SwiftUI
-import shared
+@preconcurrency import shared
 import Resolver
 import ModuleLinker
 import Utilities
 import Colors
+import Analytics
 
 @MainActor
 public struct ConnectWalletToAccountScannerView: View {
@@ -60,6 +61,7 @@ public struct ConnectWalletToAccountScannerView: View {
 		.loadingToast(shouldShow: $isLoading)
 		.toast(shouldShow: $showCopiedToast, type: .copied)
 		.background(.black)
+		.analyticsScreen(name: AppScreens.ConnectWalletScannerScreen().name)
 	}
 	
 	@ViewBuilder

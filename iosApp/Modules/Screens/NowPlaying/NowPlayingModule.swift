@@ -24,6 +24,7 @@ extension NowPlayingModule: NowPlayingViewProviding {
 }
 
 extension NowPlayingModule: MiniNowPlayingViewProviding {
+	@MainActor
 	public func miniNowPlayingView() -> AnyView {
 		MiniPlayerView().erased
 	}

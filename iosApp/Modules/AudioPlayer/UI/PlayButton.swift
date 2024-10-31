@@ -2,6 +2,8 @@ import SwiftUI
 import SharedUI
 import Resolver
 import ModuleLinker
+import shared
+import Analytics
 
 public struct PlayButton: View {
 	@InjectedObject private var audioPlayer: VLCAudioPlayer
@@ -13,8 +15,10 @@ public struct PlayButton: View {
 			switch audioPlayer.state {
 			case .playing:
 				audioPlayer.pause()
+				logPauseTapped()
 			case .paused, .stopped:
 				audioPlayer.play()
+				logPlayTapped()
 			case .buffering:
 				break
 			}
@@ -44,6 +48,30 @@ public struct PlayButton: View {
 	
 	private var isDisabled: Bool {
 		audioPlayer.state == .buffering
+	}
+}
+
+extension PlayButton {
+	private func logPauseTapped() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.MusicPlayerScreen().PAUSE_BUTTON,
+			screenName: AppScreens.MusicPlayerScreen().name,
+			properties:
+				[
+					"song_id": audioPlayer.currentTrack?.id ?? "",
+				]
+		)
+	}
+	
+	private func logPlayTapped() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.MusicPlayerScreen().PLAY_BUTTON,
+			screenName: AppScreens.MusicPlayerScreen().name,
+			properties:
+				[
+					"song_id": audioPlayer.currentTrack?.id ?? "",
+				]
+		)
 	}
 }
 

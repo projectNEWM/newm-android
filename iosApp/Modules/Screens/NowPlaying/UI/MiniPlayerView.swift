@@ -6,6 +6,7 @@ import ModuleLinker
 import Colors
 import Kingfisher
 
+@MainActor
 struct MiniPlayerView: View {
 	@InjectedObject private var audioPlayer: VLCAudioPlayer
 	
@@ -49,17 +50,16 @@ struct MiniPlayerView: View {
 	
 	@ViewBuilder
 	private var image: some View {
-		if let image = audioPlayer.artworkUrl {
-			KFImage(image)
-				.setProcessor(DownsamplingImageProcessor(size: CGSize(width: iconSize, height: iconSize)))
-				.appendProcessor(RoundCornerImageProcessor(radius: Radius.point(4)))
-				.placeholder {
-					Image.placeholder
-						.resizable()
-						.frame(width: iconSize, height: iconSize)
-						.clipShape(RoundedRectangle(cornerRadius: 4))
-				}
-				.padding(.trailing, 8)
+		AsyncImage(url: audioPlayer.artworkUrl) { image in
+			image
+				.resizable()
+				.frame(width: iconSize, height: iconSize)
+				.fixedSize()
+		} placeholder: {
+			Image.placeholder
+				.resizable()
+				.frame(width: iconSize, height: iconSize)
+				.clipShape(RoundedRectangle(cornerRadius: 4))
 		}
 	}
 }
