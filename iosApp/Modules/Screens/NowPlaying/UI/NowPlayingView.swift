@@ -7,6 +7,7 @@ import AudioPlayer
 import shared
 import Kingfisher
 import Colors
+import Analytics
 
 public struct NowPlayingView: View {
 	typealias Seconds = Int
@@ -24,6 +25,7 @@ public struct NowPlayingView: View {
 		}
 		.background(background)
 		.backButton()
+		.analyticsScreen(name: AppScreens.MusicPlayerScreen().name)
 		//TODO: make an "ErrorProviding" protocol, replace all these.
 //		.alert(isPresented: .constant(audioPlayer.errors.currentError != nil), error: audioPlayer.errors.currentError) {
 //			Button {
@@ -40,6 +42,10 @@ extension NowPlayingView {
 	@ViewBuilder
 	private var background: some View {
 		KFImage(audioPlayer.artworkUrl)
+			.placeholder { progress in
+				Gauge(value: progress.fractionCompleted, in: 0...1) { }
+					.gaugeStyle(.accessoryCircularCapacity)
+			}
 			.resizable(resizingMode: .stretch)
 			.scaledToFill()
 	}
@@ -56,9 +62,10 @@ extension NowPlayingView {
 	
 	private var playbackTimeBinding: Binding<Float> {
 		Binding<Float>(get: {
-			Float(audioPlayer.currentTime ?? 0)
+			Float(audioPlayer.currentTime?.seconds ?? 0)
 		}, set: { playbackTime in
 			audioPlayer.seek(toTime: Double(playbackTime))
+			trackSeek()
 		})
 	}
 	
@@ -71,7 +78,7 @@ extension NowPlayingView {
 			
 			VStack {
 				HStack {
-					Text("\(audioPlayer.currentTime.playbackTimeString)")
+					Text(audioPlayer.currentTime?.stringValue ?? "--:--")
 					Spacer()
 					Text("\(audioPlayer.duration.playbackTimeString)")
 				}
@@ -109,6 +116,7 @@ extension NowPlayingView {
 	private var shuffleButton: some View {
 		Button {
 			audioPlayer.shuffle.toggle()
+			trackShuffle()
 		} label: {
 			if audioPlayer.shuffle {
 				Image(systemName: "shuffle")
@@ -125,6 +133,7 @@ extension NowPlayingView {
 	private var prevButton: some View {
 		Button {
 			audioPlayer.prev()
+			trackPrev()
 		} label: {
 			Image(systemName: "backward.end.fill")
 				.tint(.white)
@@ -137,6 +146,7 @@ extension NowPlayingView {
 	private var nextButton: some View {
 		Button {
 			audioPlayer.next()
+			trackNext()
 		} label: {
 			Image(systemName: "forward.end.fill")
 				.tint(.white)
@@ -149,6 +159,7 @@ extension NowPlayingView {
 	private var repeatButton: some View {
 		Button {
 			audioPlayer.cycleRepeatMode()
+			trackRepeat()
 		} label: {
 			switch audioPlayer.repeatMode {
 			case .all:
@@ -165,6 +176,46 @@ extension NowPlayingView {
 		.scaleEffect(CGSize(width: 1.5, height: 1.5))
 	}
 }
+
+extension NowPlayingView {
+	func trackShuffle() {
+		trackPlayerButton(AppScreens.MusicPlayerScreen().TOGGLE_SHUFFLE_BUTTON)
+	}
+	
+	func trackNext() {
+		trackPlayerButton(AppScreens.MusicPlayerScreen().NEXT_BUTTON)
+	}
+	
+	func trackPrev() {
+		trackPlayerButton(AppScreens.MusicPlayerScreen().PREVIOUS_BUTTON)
+	}
+	
+	func trackSeek() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.MusicPlayerScreen().SEEK_ACTION,
+			screenName: AppScreens.MusicPlayerScreen().name,
+			properties: [
+				"song_id": audioPlayer.currentTrack?.id ?? "",
+				"position": audioPlayer.currentTime ?? ""
+			]
+		)
+	}
+
+	func trackPlayerButton(_ name: String) {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: name,
+			screenName: AppScreens.MusicPlayerScreen().name,
+			properties: [
+				"song_id": audioPlayer.currentTrack?.id ?? ""
+			]
+		)
+	}
+	
+	func trackRepeat() {
+		trackPlayerButton(AppScreens.MusicPlayerScreen().REPEAT_BUTTON)
+	}
+}
+
 //
 //#Preview {
 //	Resolver.root = Resolver(child: .main)

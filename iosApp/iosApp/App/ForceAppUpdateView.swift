@@ -1,6 +1,9 @@
 import SwiftUI
 import SharedUI
 import Colors
+import Analytics
+import shared
+import UIKit
 
 struct ForceAppUpdateView: View {
 	var body: some View {
@@ -13,16 +16,30 @@ struct ForceAppUpdateView: View {
 			Text("To ensure the best performance and latest features, please update the app. The update might include new features, improved performance, bug fixes, and more!")
 				.font(.interMedium(ofSize: 12))
 			Spacer()
-			Link("Update Now", destination: URL(string: "https://apps.apple.com/app/id6476981878")!)
-				.frame(maxWidth: .infinity)
-				.frame(height: 60)
-				.background(Gradients.mainPrimary)
-				.accentColor(.white)
-				.cornerRadius(4)
-				.bold()
+			Button {
+				trackButton()
+				UIApplication.shared.open(URL(string: "https://apps.apple.com/app/id6476981878")!)
+			} label: {
+				Text("Update Now")
+					.frame(maxWidth: .infinity)
+					.frame(height: 60)
+					.background(Gradients.mainPrimary)
+					.accentColor(.white)
+					.cornerRadius(4)
+					.bold()
+			}
 		}
 		.padding()
 		.multilineTextAlignment(.center)
+		.analyticsScreen(name: AppScreens.ForceUpdateScreen().name)
+	}
+	
+	private func trackButton() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.ForceUpdateScreen().UPDATE_BUTTON,
+			screenName: AppScreens.ForceUpdateScreen().name,
+			properties: nil
+		)
 	}
 }
 

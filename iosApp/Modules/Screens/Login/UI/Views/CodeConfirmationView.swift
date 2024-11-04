@@ -2,6 +2,8 @@ import Foundation
 import SwiftUI
 import Colors
 import SharedUI
+import Analytics
+import shared
 
 extension LandingView {
 	@ViewBuilder
@@ -33,7 +35,8 @@ extension LandingView {
 					.textContentType(.oneTimeCode)
 				
 				Button {
-					viewModel.requestNickname()
+					viewModel.registerUser()
+					trackNextButton()
 				} label: {
 					buttonText(.next)
 				}
@@ -46,6 +49,14 @@ extension LandingView {
 			}
 			.padding()
 		}
+		.analyticsScreen(name: AppScreens.EmailVerificationScreen().name)
+	}
+	
+	private func trackNextButton() {
+		NEWMAnalytics.trackClickEvent(
+			buttonName: AppScreens.EmailVerificationScreen().CONTINUE_BUTTON,
+			screenName: AppScreens.EmailVerificationScreen().name,
+			properties: nil)
 	}
 }
 

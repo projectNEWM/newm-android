@@ -121,10 +121,6 @@ class LandingViewModel: ObservableObject {
 		}
 	}
 	
-	func requestNickname() {
-		navPath.append(.nickname)
-	}
-	
 	func registerUser() {
 		isLoading = true
 		Task {
@@ -134,7 +130,6 @@ class LandingViewModel: ObservableObject {
 													 passwordConfirmation: confirmPassword,
 													 verificationCode: confirmationCode,
 													 humanVerificationCode: try await recaptcha.execute(withAction: HumanVerificationAction.register.recaptchaAction))
-				navPath.append(.done)
 			} catch {
 				handleError(error)
 			}

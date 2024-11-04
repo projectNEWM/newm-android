@@ -1,7 +1,7 @@
 import Foundation
 import VLCKitSPM
 
-extension VLCTime {
+public extension VLCTime {
 	var seconds: Double? {
 		value.flatMap { $0.doubleValue / 1_000 }
 	}

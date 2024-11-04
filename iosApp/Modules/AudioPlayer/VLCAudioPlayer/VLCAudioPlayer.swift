@@ -20,7 +20,11 @@ public class VLCAudioPlayer: ObservableObject {
 	static let sharedPlayer = VLCAudioPlayer()
 	
 	private var mediaPlayer: VLCMediaPlayer
-	@Published private var playQueue = PlayQueue()
+	private var playQueue = PlayQueue() {
+		didSet {
+			update()
+		}
+	}
 	@Published private var fileManager = FileManagerService()
 	lazy private var delegate: VLCAudioPlayerDelegate = VLCAudioPlayerDelegate()
 	private var cancels = Set<AnyCancellable>()
@@ -30,24 +34,16 @@ public class VLCAudioPlayer: ObservableObject {
 	private var _errors = PassthroughSubject<Error, Never>()
 	public var errors: AnyPublisher<Error, Never> { _errors.eraseToAnyPublisher() }
 
-	public var state: PlaybackState {
-		if mediaPlayer.isPlaying {
-			return .playing
-		} else if mediaPlayer.state == .buffering {
-			return .buffering
-		} else if mediaPlayer.state == .paused {
-			return .paused
-		} else {
-			return .stopped
-		}
-	}
-	public var duration: TimeInterval? { mediaPlayer.media?.length.seconds }
-	public var currentTime: TimeInterval? { mediaPlayer.time.seconds }
-	public var percentPlayed: Float? { mediaPlayer.position }
-	public var title: String? { mediaPlayer.media?.metaData.title }
-	public var artist: String? { mediaPlayer.media?.metaData.artist }
-	public var artworkUrl: URL? { mediaPlayer.media?.metaData.artworkURL }
-	public var willPlay: Bool { mediaPlayer.willPlay }
+	@Published public var state: PlaybackState = .stopped
+	@Published public var duration: TimeInterval?
+	@Published public var currentTime: VLCTime?
+	@Published public var percentPlayed: Float?
+	@Published public var title: String?
+	@Published public var artist: String?
+	@Published public var artworkUrl: URL?
+	@Published public var currentTrack: NFTTrack?
+	@Published public var isPlaying: Bool = false
+
 	@Injected var errorReporter: any ErrorReporting
 		
 	public var textFilter: String? {
@@ -81,7 +77,7 @@ public class VLCAudioPlayer: ObservableObject {
 		fileManager.objectWillChange
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] in
-				self?.objectWillChange.send()
+				self?.update()
 			}.store(in: &cancels)
 		
 		NotificationCenter.default.publisher(for: Notification.Name(Notification().walletConnectionStateChanged)).sink { [weak self] _ in
@@ -105,18 +101,36 @@ public class VLCAudioPlayer: ObservableObject {
 					playCurrentTrackInQueue()
 				} else if mediaPlayer.state == .error {
 					_errors.send("Unable to load \(currentTrack?.title ?? "song")")
-				}
-				DispatchQueue.main.async { [weak self] in
-					self?.objectWillChange.send()
+				} else if mediaPlayer.time != currentTime {
+					Task { @MainActor in
+						update()
+					}
 				}
 			}
 		}
 	}
 	
-	public func setTracks(_ tracks: Set<NFTTrack>) {
-		playQueue.originalTracks = tracks
+	private func update() {
+		title = mediaPlayer.media?.metaData.title
+		duration = mediaPlayer.media?.length.seconds
+		currentTime = mediaPlayer.time
+		percentPlayed = mediaPlayer.position
+		title = mediaPlayer.media?.metaData.title
+		artist = mediaPlayer.media?.metaData.artist
+		artworkUrl = mediaPlayer.media?.metaData.artworkURL
+		currentTrack = try? playQueue.currentTrack()
+		isPlaying = state == .playing
+		state = if mediaPlayer.isPlaying {
+			.playing
+		} else if mediaPlayer.state == .buffering {
+			.buffering
+		} else if mediaPlayer.state == .paused {
+			.paused
+		} else {
+			.stopped
+		}
 	}
-	
+
 	public var hasNextTrack: Bool {
 		playQueue.hasNextTrack
 	}
@@ -164,7 +178,7 @@ public class VLCAudioPlayer: ObservableObject {
 		try await fileManager.download(track: track) { [weak self] progress in
 			guard let self else { return }
 			print("progress for [\(track.title)]: \(progress)")
-			DispatchQueue.main.async {
+			Task { @MainActor in
 				self.loadingProgress[track] = progress
 			}
 		}
@@ -219,22 +233,10 @@ public class VLCAudioPlayer: ObservableObject {
 	
 	public func setTracks(_ tracks: Set<NFTTrack>, playFirstTrack: Bool = true) {
 		playQueue.originalTracks = tracks
-		try! playQueue.seekToFirst()
-		if playFirstTrack {
+		if playFirstTrack, tracks.isEmpty == false {
+			try? playQueue.seekToFirst()
 			playCurrentTrackInQueue()
 		}
-	}
-	
-	public var isPlaying: Bool {
-		state == .playing
-	}
-	
-	public var currentTrack: NFTTrack? {
-		try? playQueue.currentTrack()
-	}
-	
-	public func trackIsPlaying(_ track: NFTTrack) -> Bool {
-		currentTrack == track
 	}
 	
 	public func trackIsDownloaded(_ track: NFTTrack) -> Bool {
@@ -249,8 +251,8 @@ public class VLCAudioPlayer: ObservableObject {
 		fileManager.clearFiles()
 	}
 	
-	public func removeDownloadedSong(_ song: NFTTrack) {
-		fileManager.clearFile(at: URL(string: song.audioUrl)!)
+	public func removeDownloadedSong(_ song: NFTTrack) async {
+		await fileManager.clearFile(at: URL(string: song.audioUrl)!)
 	}
 	
 	deinit {

@@ -26,6 +26,10 @@ public final class LibraryModule: Module {
 		Resolver.register {
 			DisconnectWalletUseCaseProvider().get() as DisconnectWalletUseCase
 		}
+		
+		Resolver.register {
+			SyncWalletConnectionsUseCaseProvider().get() as SyncWalletConnectionsUseCase
+		}
     }
 }
 

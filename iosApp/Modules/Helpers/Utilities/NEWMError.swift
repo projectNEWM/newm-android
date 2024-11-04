@@ -55,7 +55,7 @@ public struct ErrorSet {
 	
 	mutating
 	public func append(_ error: Error) {
-		errors.append(NEWMError(errorDescription: "\(error)", failureReason: nil, recoverySuggestion: nil, underlyingError: error))
+		errors.append(NEWMError(errorDescription: "\(error.localizedDescription)", failureReason: nil, recoverySuggestion: nil, underlyingError: error))
 	}
 	
 	mutating

@@ -36,8 +36,8 @@ extension VLCAudioPlayer {
 			nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
 		}
 		
-		if let currentTime {
-			nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
+		if let seconds = currentTime?.seconds {
+			nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = seconds
 		}
 				
 		MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
