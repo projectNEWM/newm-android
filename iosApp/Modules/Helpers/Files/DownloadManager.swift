@@ -43,7 +43,6 @@ class DownloadManager: NSObject, ObservableObject {
 	}
 	
 	func cancelDownload(url: URL) {
-		print(#function)
 		guard let download = downloads[url] else {
 			logger.logError(DownloadManagerError.canceledUnknownURL(url))
 			return
@@ -100,7 +99,6 @@ extension DownloadManager: URLSessionDownloadDelegate {
 	func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
 		guard let url = downloadTask.originalRequest?.url else { return }
 		let progress = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
-		print("BYTES WRITTEN: \t\(totalBytesWritten) out of \(totalBytesExpectedToWrite)\n")
 		progressHandlers[url]?(progress)
 	}
 	

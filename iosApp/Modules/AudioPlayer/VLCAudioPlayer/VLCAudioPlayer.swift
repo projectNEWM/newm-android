@@ -95,16 +95,14 @@ public class VLCAudioPlayer: ObservableObject {
 	}
 	
 	private func setUpDelegateHandling() {
-		Task {
+		Task { @MainActor in
 			for await _ in delegate.stream {
 				if mediaPlayer.state == .ended, let _ = playQueue.nextTrack() {
 					playCurrentTrackInQueue()
 				} else if mediaPlayer.state == .error {
 					_errors.send("Unable to load \(currentTrack?.title ?? "song")")
-				} else if mediaPlayer.time != currentTime {
-					Task { @MainActor in
-						update()
-					}
+				} else {
+					update()
 				}
 			}
 		}
@@ -177,7 +175,6 @@ public class VLCAudioPlayer: ObservableObject {
 		
 		try await fileManager.download(track: track) { [weak self] progress in
 			guard let self else { return }
-			print("progress for [\(track.title)]: \(progress)")
 			Task { @MainActor in
 				self.loadingProgress[track] = progress
 			}
