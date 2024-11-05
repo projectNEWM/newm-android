@@ -182,7 +182,6 @@ struct PlayQueue {
 		if let prevItem {
 			currentIndex = currentQueue.firstIndex(of: prevItem)
 		}
-		print("sorted: \(currentQueue.map(\.title))")
 	}
 	
 	mutating

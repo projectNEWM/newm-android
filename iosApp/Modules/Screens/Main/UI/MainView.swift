@@ -21,6 +21,8 @@ public struct MainView: View {
 	@State private var showDebugView: Bool = false
 	@State private var tab: MainViewModelTab = .library
 	
+	private let keyboardObserver = KeyboardObserver()
+	
 	public var body: some View {
 		GeometryReader { geometry in
 			if viewModel.shouldShowLogin {
@@ -34,7 +36,7 @@ public struct MainView: View {
 					.overlay {
 						Spacer()
 						miniPlayerView
-							.offset(x: 0, y: -geometry.safeAreaInsets.bottom+1)
+							.offset(x: 0, y: keyboardObserver.isKeyboardShown ? 0 : -geometry.safeAreaInsets.bottom+1)
 							.transition(.move(edge: .bottom))
 					}
 					.transition(.move(edge: .bottom))

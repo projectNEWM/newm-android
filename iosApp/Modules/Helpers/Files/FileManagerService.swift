@@ -8,7 +8,8 @@ public class FileManagerService: ObservableObject {
 	public typealias ProgressHandler = (Double) -> Void
 	
 	let downloadManager = DownloadManager()
-	
+	private var downloadedFilesCache: [URL: Bool] = [:]
+		
 	@Injected private var errorLogger: ErrorReporting
 	private var cancels: Set<AnyCancellable> = []
 	
@@ -27,8 +28,13 @@ public class FileManagerService: ObservableObject {
 	
 	public func fileExists(for url: URL) -> Bool {
 		do {
+			if let cached = downloadedFilesCache[url] {
+				return cached
+			}
 			let url = try fileURL(forDownloadURL: url)
-			return FileManager.default.fileExists(atPath: url.path)
+			let fileExists = FileManager.default.fileExists(atPath: url.path)
+			downloadedFilesCache[url] = fileExists
+			return fileExists
 		} catch {
 			errorLogger.logError(error)
 			return false
@@ -36,6 +42,7 @@ public class FileManagerService: ObservableObject {
 	}
 	
 	public func clearFiles() {
+		downloadedFilesCache.removeAll()
 		let fileManager = FileManager.default
 		guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
 		
@@ -51,6 +58,7 @@ public class FileManagerService: ObservableObject {
 	}
 	
 	public func clearFile(at url: URL) async {
+		downloadedFilesCache[url] = nil
 		await Task {
 			do {
 				try FileManager.default.removeItem(at: try fileURL(forDownloadURL: url))
@@ -64,6 +72,7 @@ public class FileManagerService: ObservableObject {
 	public func download(url: URL, progressHandler: @escaping ProgressHandler) async throws {
 		progressHandler(0)
 		try await downloadManager.download(url: url, progressHandler: progressHandler)
+		downloadedFilesCache[url] = true
 	}
 	
 	public func cancelDownload(url: URL) {
