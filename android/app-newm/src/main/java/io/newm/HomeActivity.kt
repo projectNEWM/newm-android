@@ -53,10 +53,6 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        if(featureFlagManager.isEnabled(FeatureFlags.MarketPlace)) {
-            // TODO show/hide marketplace
-            logger.info("HomeActivity", "MarketPlace feature is enabled")
-        }
         super.onCreate(savedInstanceState)
         setContent {
             NewmTheme(darkTheme = true) {
@@ -71,7 +67,10 @@ class HomeActivity : ComponentActivity() {
                             eventLogger
                         )
                     } else {
-                        NewmApp(logger, eventLogger)
+                        NewmApp(
+                            logger = logger,
+                            eventLogger = eventLogger,
+                            showRecordStore = featureFlagManager.isEnabled(FeatureFlags.ShowRecordStore))
                     }
                 }
             }

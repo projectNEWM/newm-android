@@ -5,7 +5,7 @@ interface FeatureFlag {
 }
 
 object FeatureFlags {
-    object MarketPlace : FeatureFlag {
-        override val key = "streams-marketplace"
+    object ShowRecordStore : FeatureFlag {
+        override val key = "mobileAppShowRecordStore"
     }
 }

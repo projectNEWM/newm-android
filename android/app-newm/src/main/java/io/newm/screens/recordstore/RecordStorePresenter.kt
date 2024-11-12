@@ -27,8 +27,9 @@ class RecordStorePresenter(
     @Composable
     override fun present(): RecordStoreState {
         val context = LocalContext.current
-        val connectivityManager =
+        val connectivityManager = remember {
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        }
         val isNetworkAvailable by remember {
             mutableStateOf(connectivityManager.activeNetwork != null)
         }

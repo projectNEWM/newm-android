@@ -89,7 +89,7 @@ val initialScreen = Screen.NFTLibrary
 internal fun NewmApp(
     logger: NewmAppLogger,
     eventLogger: NewmAppEventLogger,
-    showRecordStore: Boolean = false //update once backend supports special access
+    showRecordStore: Boolean
 ) {
     val context = LocalContext.current
     val backstack = rememberSaveableBackStack {
@@ -190,7 +190,7 @@ internal fun NewmApp(
 internal fun NewmBottomNavigation(
     currentRootScreen: CircuitScreen?,
     eventLogger: NewmAppEventLogger,
-    showRecordStore: Boolean = false,
+    showRecordStore: Boolean,
     onNavigationSelected: (Screen) -> Unit
 ) {
     Column(Modifier.height(76.dp)) {
@@ -245,7 +245,7 @@ internal fun NewmBottomNavigation(
 @Preview(showBackground = true)
 @Composable
 fun BottomNavigationBarPreview() {
-    NewmBottomNavigation(Screen.NFTLibrary, NewmAppEventLogger()) {}
+    NewmBottomNavigation(Screen.NFTLibrary, NewmAppEventLogger(), showRecordStore = false) {}
 }
 
 // Based on content from: https://github.com/wlara/android-next-gen/blob/main/app/src/main/java/com/github/wlara/nextgen/ui/home/HomeScreen.kt
