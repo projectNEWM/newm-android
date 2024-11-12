@@ -127,7 +127,9 @@ fun NFTLibraryScreenUi(
                 LaunchedEffect(Unit) {
                     eventLogger.logPageLoad(AppScreens.ErrorScreen.name)
                 }
-                ErrorScreen(state.message)
+                ErrorScreen(
+                    title = "Oops, something went wrong!",
+                    message =state.message)
             }
 
             is NFTLibraryState.Content -> {

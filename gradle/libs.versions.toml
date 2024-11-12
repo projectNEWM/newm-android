@@ -11,6 +11,7 @@ androidx-espresso-core = "3.6.1"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 barcodeScanning = "17.2.0"
+browser = "1.8.0"
 cameraView = "1.4.0-beta02"
 circuitFoundation = "0.17.0"
 coil = "2.6.0"
@@ -50,6 +51,7 @@ uiUtil = "1.6.8"
 
 [libraries]
 android-driver = { module = "com.squareup.sqldelight:android-driver", version.ref = "coroutinesExtensions" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraView" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraView" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }

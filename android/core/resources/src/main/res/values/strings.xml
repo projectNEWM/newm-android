@@ -1,5 +1,6 @@
 <resources>
     <string name="account">Account</string>
+    <string name="record_store">RecordStore</string>
     <string name="app_name">NEWM</string>
     <string name="artist_list_songs">%s Songs</string>
     <string name="barcode_help_text">How can I connect a wallet?</string>
