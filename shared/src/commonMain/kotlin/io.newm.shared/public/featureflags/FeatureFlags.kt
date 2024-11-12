@@ -6,6 +6,6 @@ interface FeatureFlag {
 
 object FeatureFlags {
     object ShowRecordStore : FeatureFlag {
-        override val key = "mobileAppShowRecordStore"
+        override val key = "mobile-app-show-recordstore"
     }
 }

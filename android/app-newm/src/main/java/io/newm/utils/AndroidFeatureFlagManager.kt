@@ -42,7 +42,6 @@ class AndroidFeatureFlagManager(
     override suspend fun setUser(user: User) {
         val ldContext = LDContext.builder(ContextKind.DEFAULT, user.id)
             .set("email", user.email)
-            .name(user.nickname ?: user.email)
             .build()
 
         client.identify(ldContext)
