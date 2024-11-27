@@ -125,11 +125,18 @@ class LandingViewModel: ObservableObject {
 		isLoading = true
 		Task {
 			do {
-				try await signUpUseCase.registerUser(email: email,
-													 password: password,
-													 passwordConfirmation: confirmPassword,
-													 verificationCode: confirmationCode,
-													 humanVerificationCode: try await recaptcha.execute(withAction: HumanVerificationAction.register.recaptchaAction))
+				try await signUpUseCase.registerUser(
+					email: email,
+					password: password,
+					passwordConfirmation: confirmPassword,
+					verificationCode: confirmationCode,
+					humanVerificationCode: try await recaptcha.execute(withAction: HumanVerificationAction.register.recaptchaAction)
+				)
+				try await logInUseCase.logIn(
+					email: email,
+					password: password,
+					humanVerificationCode: try await recaptcha.execute(withAction: HumanVerificationAction.loginEmail.recaptchaAction)
+				)
 			} catch {
 				handleError(error)
 			}
