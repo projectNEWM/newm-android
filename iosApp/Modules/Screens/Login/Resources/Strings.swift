@@ -19,4 +19,5 @@ extension String {
 	@Localizable(LoginModule.self) static var verificationCode = "VERIFICATION_CODE"
 	@Localizable(LoginModule.self) static var whatShouldWeCallYou = "WHAT_SHOULD_WE_CALL_YOU"
 	@Localizable(LoginModule.self) static var shallWe = "SHALL_WE"
+	@Localizable(LoginModule.self) static var minimum8Characters = "MINIMUM_8_CHARACTERS"
 }
