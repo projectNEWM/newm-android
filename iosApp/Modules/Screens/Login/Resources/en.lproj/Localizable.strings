@@ -6,7 +6,8 @@
 "PASSWORD" = "PASSWORD";
 "YOUR_PASSWORD" = "Your password";
 "EMAIL_PROMPT" = "john@mail.com";
-"CONFIRM_PASSWORD" = "Confirm your password";
+"CONFIRM_YOUR_PASSWORD" = "Confirm your password";
+"CONFIRM_PASSWORD" = "Confirm password";
 "NEXT" = "Next";
 "ERROR" = "Error";
 "UNKNOWN_ERROR" = "Unknown error";

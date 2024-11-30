@@ -11,6 +11,7 @@ extension String {
 	@Localizable(LoginModule.self) static var yourPassword = "YOUR_PASSWORD"
 	@Localizable(LoginModule.self) static var emailPrompt = "EMAIL_PROMPT"
 	@Localizable(LoginModule.self) static var confirmPassword = "CONFIRM_PASSWORD"
+	@Localizable(LoginModule.self) static var confirmYourPassword = "CONFIRM_YOUR_PASSWORD"
 	@Localizable(LoginModule.self) static var next = "NEXT"
 	@Localizable(LoginModule.self) static var error = "ERROR"
 	@Localizable(LoginModule.self) static var unknownError = "UNKNOWN_ERROR"

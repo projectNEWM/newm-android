@@ -14,7 +14,7 @@ extension LandingView {
 				NEWMTextField(title: .password, prompt: .yourPassword, isSecure: true, text: $viewModel.password)
 					.textContentType(.password)
 					.padding(.bottom)
-				NEWMTextField(title: .password, prompt: .confirmPassword, isSecure: true, text: $viewModel.confirmPassword)
+				NEWMTextField(title: .confirmPassword, prompt: .confirmYourPassword, isSecure: true, text: $viewModel.confirmPassword)
 					.textContentType(.password)
 					.padding(.bottom)
 			}.padding()
