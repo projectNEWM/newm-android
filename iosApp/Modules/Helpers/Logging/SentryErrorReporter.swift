@@ -30,11 +30,11 @@ class SentryErrorReporter: ErrorReporting {
 	}
 	
 	func logBreadcrumb(_ crumb: String, level: LoggingLevel) {
-//#if !DEBUG
+#if !DEBUG
 		let breadcrumb = Breadcrumb()
 		breadcrumb.level = level.sentryLevel
 		SentrySDK.addBreadcrumb(breadcrumb)
-//#endif
+#endif
 	}
 }
 
