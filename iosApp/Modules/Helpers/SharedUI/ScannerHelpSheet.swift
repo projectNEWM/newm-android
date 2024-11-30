@@ -48,7 +48,7 @@ struct ScannerHelpSheet: View {
 						
 						HStack {
 							Spacer()
-							Text(verbatim: "or continue on desktop at the same address (https://newm.tools/)")
+							Text(verbatim: "or continue on desktop at the same address (https://tools.newm.io)")
 								.foregroundColor(.gray)
 								.multilineTextAlignment(.center)
 								.font(.inter(ofSize: 14))
