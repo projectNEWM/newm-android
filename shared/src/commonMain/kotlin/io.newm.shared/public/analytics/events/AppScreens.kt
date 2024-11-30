@@ -99,6 +99,7 @@ object AppScreens {
 
     object RecordStoreScreen : ScreenEvents {
         override val name = "Record Store"
+        const val RECORD_STORE_BUTTON: String = "RecordStore"
     }
 
     object ResetPasswordEnterCodeScreen : ScreenEvents {

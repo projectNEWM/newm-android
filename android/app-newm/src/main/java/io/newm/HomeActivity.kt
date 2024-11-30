@@ -27,6 +27,9 @@ import io.newm.screens.library.NFTLibraryState
 import io.newm.screens.profile.edit.ProfileEditPresenter
 import io.newm.screens.profile.edit.ProfileEditUi
 import io.newm.screens.profile.edit.ProfileEditUiState
+import io.newm.screens.recordstore.RecordStorePresenter
+import io.newm.screens.recordstore.RecordStoreScreenUi
+import io.newm.screens.recordstore.RecordStoreState
 import io.newm.screens.profile.view.ProfilePresenter
 import io.newm.screens.profile.view.ProfileUi
 import io.newm.screens.profile.view.ProfileUiState
@@ -50,10 +53,6 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        if(featureFlagManager.isEnabled(FeatureFlags.MarketPlace)) {
-            // TODO show/hide marketplace
-            logger.info("HomeActivity", "MarketPlace feature is enabled")
-        }
         super.onCreate(savedInstanceState)
         setContent {
             NewmTheme(darkTheme = true) {
@@ -68,7 +67,10 @@ class HomeActivity : ComponentActivity() {
                             eventLogger
                         )
                     } else {
-                        NewmApp(logger, eventLogger)
+                        NewmApp(
+                            logger = logger,
+                            eventLogger = eventLogger,
+                            showRecordStore = featureFlagManager.isEnabled(FeatureFlags.ShowRecordStore))
                     }
                 }
             }
@@ -87,6 +89,14 @@ class HomeActivity : ComponentActivity() {
             when (screen) {
                 is Screen.UserAccount -> ui<ProfileUiState> { state, modifier ->
                     ProfileUi(
+                        state = state,
+                        modifier = modifier,
+                        eventLogger = eventLogger
+                    )
+                }
+
+                is Screen.RecordStore -> ui<RecordStoreState> { state, modifier ->
+                    RecordStoreScreenUi(
                         state = state,
                         modifier = modifier,
                         eventLogger = eventLogger
@@ -133,6 +143,12 @@ class HomeActivity : ComponentActivity() {
                 }.value
 
                 is NFTLibrary -> inject<NFTLibraryPresenter> {
+                    parametersOf(
+                        navigator
+                    )
+                }.value
+
+                is Screen.RecordStore -> inject<RecordStorePresenter> {
                     parametersOf(
                         navigator
                     )

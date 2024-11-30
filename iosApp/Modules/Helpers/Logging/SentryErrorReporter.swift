@@ -12,8 +12,8 @@ class SentryErrorReporter: ErrorReporting {
 	}
 	
 	func logError(_ error: Error) {
-		guard reportError(error) else { return }
 #if !DEBUG
+		guard reportError(error) else { return }
 		print("ERROR: \(error.kmmException?.description() ?? error)")
 		SentrySDK.capture(error: error.kmmException ?? error)
 #endif

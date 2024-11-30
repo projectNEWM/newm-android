@@ -113,7 +113,7 @@ private val disconnectWalletButtonTextGradient =
 fun ProfileUi(
     state: ProfileUiState,
     modifier: Modifier = Modifier,
-    eventLogger : NewmAppEventLogger
+    eventLogger: NewmAppEventLogger
 ) {
     when (state) {
         ProfileUiState.Loading -> LoadingScreen()
