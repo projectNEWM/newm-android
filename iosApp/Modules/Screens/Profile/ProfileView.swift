@@ -113,10 +113,10 @@ extension ProfileView {
 	@ViewBuilder
 	private var bottomSection: some View {
 		VStack(alignment: .leading, spacing: 20) {
-			NEWMTextField(title: "EMAIL", prompt: "", isSecure: false, text: .constant(viewModel.email), disabled: true).padding(.bottom)
+			NEWMTextField(title: "EMAIL", prompt: "", isSecure: false, text: .constant(viewModel.email), disabled: true)
 				.textContentType(.emailAddress)
 				.keyboardType(.asciiCapable)
-			Divider().padding(.bottom)
+			Divider()
 			bottomSectionHeader("CHANGE PASSWORD")
 			NEWMTextField(title: "CURRENT PASSWORD", prompt: "Your password", isSecure: true, text: $viewModel.currentPassword)
 				.textContentType(.password)
