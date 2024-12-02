@@ -11,10 +11,10 @@ extension LandingView {
 				NEWMTextField(title: .email, prompt: .emailPrompt, isSecure: false, text: $viewModel.email)
 					.textContentType(.emailAddress)
 					.padding(.bottom)
-				NEWMTextField(title: .password, prompt: .yourPassword, isSecure: true, text: $viewModel.password)
+				NEWMTextField(title: .password, prompt: .minimum8Characters, isSecure: true, text: $viewModel.password)
 					.textContentType(.password)
 					.padding(.bottom)
-				NEWMTextField(title: .password, prompt: .confirmPassword, isSecure: true, text: $viewModel.confirmPassword)
+				NEWMTextField(title: .confirmPassword, prompt: .confirmYourPassword, isSecure: true, text: $viewModel.confirmPassword)
 					.textContentType(.password)
 					.padding(.bottom)
 			}.padding()
@@ -22,7 +22,6 @@ extension LandingView {
 			actionButton(title: .next, backgroundGradient: Gradients.loginGradient.gradient) {
 				viewModel.requestVerificationCode()
 			}
-			.disabled(!viewModel.createAccountFieldsAreValid)
 			.padding([.leading, .trailing])
 			
 			Spacer()

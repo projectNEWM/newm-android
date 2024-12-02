@@ -9,7 +9,7 @@ extension VLCAudioPlayer {
 		if let title = title {
 			nowPlayingInfo[MPMediaItemPropertyTitle] = title
 		} else {
-			errorReporter.logError("Couldn't get audio player title.")
+			errorReporter.logError("Couldn't get audio player title for track: \(currentTrack.debugDescription)")
 		}
 		
 		if let artworkUrl {

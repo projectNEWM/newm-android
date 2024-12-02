@@ -20,7 +20,6 @@ extension LandingView {
 				actionButton(title: .next, backgroundGradient: Gradients.loginGradient.gradient) {
 					viewModel.login()
 				}
-				.disabled(!viewModel.loginFieldsAreValid)
 				Spacer()
 			}
 			.addSidePadding()

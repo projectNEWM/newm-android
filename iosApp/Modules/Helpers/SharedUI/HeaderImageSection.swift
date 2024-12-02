@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import Kingfisher
 
 public struct HeaderImageSection: View {
 	private let imageURL: String?
@@ -19,13 +20,13 @@ public struct HeaderImageSection: View {
 	
 	@ViewBuilder
 	private func image(size: CGSize, frame: CGRect) -> some View {
-		let image = AsyncImage(
-			url: imageURL.flatMap(URL.init),
-			content: { image in
-				image.resizable()
-			}, placeholder: {
+		let image = KFImage(imageURL.flatMap(URL.init))
+			.placeholder { _ in
 				Image.placeholder.resizable()
-			})
+			}
+			.contentConfigure { image in
+				image.resizable()
+			}
 			.aspectRatio(contentMode: .fill)
 		
 		if frame.minY <= 0 {

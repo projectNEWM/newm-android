@@ -91,52 +91,56 @@ struct LibraryView: View {
 	
 	@ViewBuilder
 	fileprivate var noSongsMessage: some View {
-		ScrollView {
-			ZStack {
+		GeometryReader { geometry in
+			ScrollView {
+				ZStack {
+					VStack(alignment: .center) {
+						Spacer(minLength: geometry.size.height / 2.0 - 100.0)
+						Text("Your library is empty.")
+							.font(
+								Font.custom("Inter", size: 24)
+									.weight(.bold)
+							)
+							.multilineTextAlignment(.center)
+							.foregroundColor(.white)
+							.frame(width: 358, alignment: .top)
+							.padding(.bottom)
+						
+						Text("Time to rescue it with your epic music stash!\nLet’s fill this up. 🎶")
+							.font(
+								Font.custom("Inter", size: 14)
+									.weight(.medium)
+							)
+							.multilineTextAlignment(.center)
+							.foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.57))
+							.frame(width: 358, alignment: .top)
+							.padding(.bottom)
+						
+						if viewModel.walletIsConnected {
+							Button {
+								trackRecordStore()
+								UIApplication.shared.open(URL(string: "https://newm.io/recordstore")!)
+							} label: {
+								Text("Visit Record Store")
+									.frame(maxWidth: .infinity)
+									.padding()
+									.background(Gradients.mainPrimary.opacity(0.08))
+									.foregroundColor(NEWMColor.midMusic())
+									.cornerRadius(8)
+							}
+						}
+					}
+					.frame(maxWidth: .infinity)
+				}
+			}
+			if viewModel.walletIsConnected == false {
 				VStack {
-					Text("Your library is empty.")
-						.font(
-							Font.custom("Inter", size: 24)
-								.weight(.bold)
-						)
-						.multilineTextAlignment(.center)
-						.foregroundColor(.white)
-						.frame(width: 358, alignment: .top)
-						.padding(.bottom)
-					
-					Text("Time to rescue it with your epic music stash!\nLet’s fill this up. 🎶")
-						.font(
-							Font.custom("Inter", size: 14)
-								.weight(.medium)
-						)
-						.multilineTextAlignment(.center)
-						.foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.57))
-						.frame(width: 358, alignment: .top)
-						.padding(.bottom)
-					
-					if viewModel.walletIsConnected {
-						Button {
-							trackRecordStore()
-							UIApplication.shared.open(URL(string: "https://newm.io/recordstore")!)
-						} label: {
-							Text("Visit Record Store")
-								.frame(maxWidth: .infinity)
-								.padding()
-								.background(Gradients.mainPrimary.opacity(0.08))
-								.foregroundColor(NEWMColor.midMusic())
-								.cornerRadius(8)
-						}
+					Spacer()
+					ConnectWalletAlertView {
+						viewModel.connectWallet()
 					}
 				}
-				if viewModel.walletIsConnected == false {
-					VStack {
-						Spacer()
-						ConnectWalletAlertView {
-							viewModel.connectWallet()
-						}
-					}
-					.padding()
-				}
+				.padding()
 			}
 		}
 		.analyticsScreen(name: AppScreens.NFTLibraryEmptyWalletScreen().name)
