@@ -8,4 +8,8 @@ object FeatureFlags {
     object ShowRecordStore : FeatureFlag {
         override val key = "mobile-app-show-recordstore"
     }
+
+    object DownloadTracks : FeatureFlag {
+        override val key = "mobile-app-track-downloads"
+    }
 }
