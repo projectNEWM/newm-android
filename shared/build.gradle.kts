@@ -59,6 +59,7 @@ kotlin {
 				implementation(libs.ktor.client.auth)
 				implementation(libs.androidx.datastore.preferences)
 				implementation(libs.store5)
+				implementation(libs.kvault)
 			}
 		}
 		val commonTest by getting {
@@ -104,6 +105,9 @@ kotlin {
 			languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
 		}
 	}
+}
+dependencies {
+	implementation(project(":shared"))
 }
 
 buildConfig {

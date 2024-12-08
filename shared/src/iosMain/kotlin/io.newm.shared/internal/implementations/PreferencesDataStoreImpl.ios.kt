@@ -1,46 +1,40 @@
 package io.newm.shared.internal.implementations
 
+import com.liftric.kvault.KVault
 import io.newm.shared.internal.db.PreferencesDataStore
-import platform.Foundation.NSUserDefaults
 
 class PreferencesDataStoreImpl : PreferencesDataStore {
-
-    private val userDefaults = NSUserDefaults.standardUserDefaults
+    private val vault: KVault = KVault("newm_ios_preferences")
 
     override fun saveString(key: String, value: String) {
-        userDefaults.setObject(value, forKey = key)
+        vault.set(key, value)
     }
 
     override fun getString(key: String): String? {
-        return userDefaults.stringForKey(key)
+        return vault.string(key)
     }
 
     override fun saveInt(key: String, value: Int) {
-        userDefaults.setInteger(value.toLong(), forKey = key)
+        vault.set(key, value)
     }
 
     override fun getInt(key: String): Int? {
-        val value = userDefaults.integerForKey(key)
-        return if (value.toInt() == 0 && userDefaults.objectForKey(key) == null) null else value.toInt()
+        return vault.int(key)
     }
 
     override fun saveBoolean(key: String, value: Boolean) {
-        userDefaults.setBool(value, forKey = key)
+        vault.set(key, value)
     }
 
     override fun getBoolean(key: String): Boolean? {
-        val value = userDefaults.boolForKey(key)
-        return if (!value && userDefaults.objectForKey(key) == null) null else value
+        return vault.bool(key)
     }
 
     override fun deleteValue(key: String) {
-        userDefaults.removeObjectForKey(key)
+        vault.deleteObject(key)
     }
 
     override fun clearAll() {
-        val keys = userDefaults.dictionaryRepresentation().keys
-        for (key in keys) {
-            userDefaults.removeObjectForKey(key.toString())
-        }
+        vault.clear()
     }
 }
