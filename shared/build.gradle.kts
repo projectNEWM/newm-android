@@ -106,9 +106,6 @@ kotlin {
 		}
 	}
 }
-dependencies {
-	implementation(project(":shared"))
-}
 
 buildConfig {
 	packageName("io.newm.shared.generated")
