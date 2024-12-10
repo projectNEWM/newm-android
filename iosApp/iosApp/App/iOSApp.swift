@@ -63,12 +63,16 @@ struct iOSApp: App {
 	}
 	
 	private func checkAppUpdate() async {
-		showUpdateAlert = (try? await forceAppUpdateUseCase.isiOSUpdateRequired(
-			currentAppVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String,
-			humanVerificationCode: try! await recaptcha.execute(
-				withAction: RecaptchaAction(customAction: "mobile_config")
-			)
-		).boolValue) == true
+	    do {
+            showUpdateAlert = (try await forceAppUpdateUseCase.isiOSUpdateRequired(
+                currentAppVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String,
+                humanVerificationCode: try await recaptcha.execute(
+                    withAction: RecaptchaAction(customAction: "mobile_config")
+                )
+            ).boolValue) == true
+		} catch {
+            errorLogger.logError("Error checking for app update: \(error.localizedDescription)")
+        }
 	}
 }
 
