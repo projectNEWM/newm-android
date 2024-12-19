@@ -6,5 +6,5 @@ XCFRAMEWORK_PATH="/Users/martyulrich/Repos/newm-mobile/shared/build/XCFrameworks
 
 xcodebuild -project ../../iosApp/iosApp.xcodeproj \
             -scheme iosApp \
-            -destination platform=iOS\ Simulator,OS=17.0,name=iPhone\ 11 \
+            -destination platform=iOS\ Simulator,OS=17.0,name=iPhone\ 13 \
             clean build test
