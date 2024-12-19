@@ -14,6 +14,7 @@ import io.newm.shared.internal.api.RemoteConfigAPI
 import io.newm.shared.internal.api.UserAPI
 import io.newm.shared.internal.implementations.ChangePasswordUseCaseImpl
 import io.newm.shared.internal.implementations.ConnectWalletUseCaseImpl
+import io.newm.shared.internal.implementations.DeleteCurrentUserUseCaseImpl
 import io.newm.shared.internal.implementations.DisconnectWalletUseCaseImpl
 import io.newm.shared.internal.implementations.ForceAppUpdateUseCaseImpl
 import io.newm.shared.internal.implementations.GetGenresUseCaseImpl
@@ -42,6 +43,7 @@ import io.newm.shared.internal.store.NftTrackStore
 import io.newm.shared.public.analytics.NewmAppEventLogger
 import io.newm.shared.public.usecases.ChangePasswordUseCase
 import io.newm.shared.public.usecases.ConnectWalletUseCase
+import io.newm.shared.public.usecases.DeleteCurrentUserUseCase
 import io.newm.shared.public.usecases.DisconnectWalletUseCase
 import io.newm.shared.public.usecases.ForceAppUpdateUseCase
 import io.newm.shared.public.usecases.GetGenresUseCase
@@ -132,6 +134,7 @@ fun commonModule(enableNetworkLogs: Boolean) = module {
     single<SyncWalletConnectionsUseCase> { SyncWalletConnectionsUseCaseImpl(get()) }
     single<GetWalletConnectionsUseCase> { GetWalletConnectionsUseCaseImpl(get()) }
     single<HasWalletConnectionsUseCase> { HasWalletConnectionsUseCaseImpl(get()) }
+    single<DeleteCurrentUserUseCase> { DeleteCurrentUserUseCaseImpl(get(), get()) }
 }
 
 fun createJson() = Json {

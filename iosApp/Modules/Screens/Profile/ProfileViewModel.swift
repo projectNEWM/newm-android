@@ -14,7 +14,8 @@ final class ProfileViewModel: ObservableObject {
 	@LazyInjected private var changePasswordUseCase: ChangePasswordUseCase
 	@LazyInjected private var disconnectWalletUseCase: DisconnectWalletUseCase
 	@LazyInjected private var logOutUseCase: LoginUseCase
-	
+	@LazyInjected private var deleteUserUseCase: DeleteCurrentUserUseCase
+
 	@Injected private var logger: ErrorReporting
 	
 	@Published private var user: User?
@@ -32,6 +33,7 @@ final class ProfileViewModel: ObservableObject {
 	@Published var showLoadingToast: Bool = true
 	@Published var showCompletionToast: Bool = false
 	@Published var isWalletConnected: Bool = false
+	@Published var showDeleteUserConfirmation: Bool = false
 	var errorAlert: String? { errors.currentError?.errorDescription }
 		
 	var enableSaveButon: Bool {
@@ -119,6 +121,15 @@ final class ProfileViewModel: ObservableObject {
 		do {
 			try logOutUseCase.logout()
 			NotificationCenter.default.post(name: Notification.Name(shared.Notification().loginStateChanged), object: nil)
+		} catch {
+			errors.append(error)
+		}
+	}
+	
+	func deleteUser() async {
+		do {
+			showLoadingToast = true
+			try await deleteUserUseCase.delete()
 		} catch {
 			errors.append(error)
 		}

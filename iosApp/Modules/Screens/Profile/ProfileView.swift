@@ -16,7 +16,7 @@ public struct ProfileView: View {
 	private let sectionSpacing: CGFloat = 12
 	@State private var showXPubScanner = false
 	@State private var showBottomSheet = false
-	
+
 	public init() {}
 	
 	public var body: some View {
@@ -66,6 +66,20 @@ extension ProfileView {
 		}
 		.sheet(isPresented: $showBottomSheet) {
 			bottomSheet
+		}
+		.confirmationDialog(
+			"Are you sure?",
+			isPresented: $viewModel.showDeleteUserConfirmation,
+			titleVisibility: .visible
+		) {
+			Button("Delete", role: .destructive) {
+				Task {
+					await viewModel.deleteUser()
+				}
+			}
+			Button("Cancel", role: .cancel) {}
+		} message: {
+			Text("This action cannot be undone.")
 		}
 	}
 	
@@ -195,13 +209,25 @@ extension ProfileView {
 							.foregroundColor(NEWMColor.error.swiftUIColor)
 							.cornerRadius(8)
 					}
+					
+					Button(action: {
+						showBottomSheet = false
+						viewModel.showDeleteUserConfirmation = true
+					}) {
+						Text("Delete Account")
+							.frame(maxWidth: .infinity)
+							.padding()
+							.background(try! Color(hex: "#EB5545").opacity(0.08))
+							.foregroundColor(NEWMColor.error.swiftUIColor)
+							.cornerRadius(8)
+					}
 				}
 				.padding()
 				.background(Color.black.opacity(0.8))
 				.cornerRadius(16)
 			}
 		}
-		.presentationDetents([.height(204)])
+		.presentationDetents([.height(264)])
 	}
 }
 

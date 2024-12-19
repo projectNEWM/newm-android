@@ -19,6 +19,10 @@ public final class ProfileModule: Module {
 		Resolver.register {
 			DisconnectWalletUseCaseProvider().get() as DisconnectWalletUseCase
 		}
+		
+		Resolver.register {
+			DeleteCurrentUserUseCaseProvider().get() as DeleteCurrentUserUseCase
+		}
 	}
 	
 #if DEBUG
