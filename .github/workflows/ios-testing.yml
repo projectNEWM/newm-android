@@ -2,30 +2,35 @@ name: iOS Testing
 on:
   pull_request:
     branches:
-    - development
-    - master
+      - development
+      - master
     paths:
-    - '.github/**'
-    - 'build.gradle.kts'
-    - 'gradle/**'
-    - 'gradle.properties'
-    - 'gradlew.bat'
-    - 'iosApp/**'
-    - 'local.properties'
-    - 'settings.gradle.kts'
-    - 'shared/build/xcode-frameworks/**'
-    - 'shared/src/commonMain/**'
-    - 'shared/src/iosMain/**'
-    - 'shared/build.gradle.kts'
+      - '.github/**'
+      - 'build.gradle.kts'
+      - 'gradle/**'
+      - 'gradle.properties'
+      - 'gradlew.bat'
+      - 'iosApp/**'
+      - 'local.properties'
+      - 'settings.gradle.kts'
+      - 'shared/build/xcode-frameworks/**'
+      - 'shared/src/commonMain/**'
+      - 'shared/src/iosMain/**'
+      - 'shared/build.gradle.kts'
+
 jobs:
   test:
-    name: Testing iOS app
+    name: Test iOS App
     runs-on: macOS-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
-	  - name: Force XCode 16.2
-	    uses: actions/setup-xcode-version@v3
-        run: sudo xcode-select -switch /Applications/Xcode_16.2.app
-      - name: Testing iOS app
+        uses: actions/checkout@v3
+
+      - name: Set up Xcode 16.2
+        uses: actions/setup-xcode@v3
+        with:
+          xcode-version: '16.2'
+
+      - name: Run iOS app tests
         run: exec ./.github/scripts/test_app.sh
