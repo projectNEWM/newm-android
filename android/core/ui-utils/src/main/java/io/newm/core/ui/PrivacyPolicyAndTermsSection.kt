@@ -4,11 +4,13 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
+import io.newm.core.resources.R
 
 @Composable
 fun PrivacyPolicyAndTermsSection(
@@ -17,7 +19,7 @@ fun PrivacyPolicyAndTermsSection(
     onTermsOfServiceClicked: () -> Unit
 ) {
     val annotatedText = buildAnnotatedString {
-        append("By continuing, I agree to NEWM's\n")
+        append(stringResource(R.string.privacy_continue))
 
         pushStringAnnotation(tag = "privacy", annotation = "privacy_policy")
         withStyle(
@@ -26,11 +28,11 @@ fun PrivacyPolicyAndTermsSection(
                 textDecoration = TextDecoration.Underline
             )
         ) {
-            append("Privacy Policy")
+            append(stringResource(R.string.privacy_policy))
         }
         pop()
 
-        append(" and ")
+        append(stringResource(R.string.and))
 
         pushStringAnnotation(tag = "terms", annotation = "terms_of_service")
         withStyle(
@@ -39,7 +41,7 @@ fun PrivacyPolicyAndTermsSection(
                 textDecoration = TextDecoration.Underline
             )
         ) {
-            append("Terms of Service")
+            append(stringResource(R.string.terms_of_service))
         }
         pop()
     }

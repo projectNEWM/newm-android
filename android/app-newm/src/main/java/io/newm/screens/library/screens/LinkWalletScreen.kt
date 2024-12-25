@@ -16,10 +16,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,10 +34,10 @@ import io.newm.core.theme.inter
 import io.newm.core.ui.permissions.AppPermission
 import io.newm.core.ui.permissions.doWithPermission
 import io.newm.core.ui.permissions.rememberRequestPermissionIntent
+import io.newm.core.ui.utils.shortToast
 import io.newm.core.ui.wallet.ConnectWalletPanel
 import io.newm.feature.barcode.scanner.BarcodeScannerActivity
 import io.newm.screens.library.TAG_NFT_LIBRARY_SCREEN
-import io.newm.shared.public.analytics.NewmAppEventLogger
 
 @Composable
 fun LinkWalletScreen(
@@ -56,8 +54,11 @@ fun LinkWalletScreen(
             // Do something with the data
             val newmWalletConnectionId =
                 data?.getStringExtra(BarcodeScannerActivity.NEWM_WALLET_CONNECTION_ID).orEmpty()
-            Toast.makeText(context, "Wallet connected $newmWalletConnectionId", Toast.LENGTH_SHORT)
-                .show()
+            // create message
+            val message =
+                context.getString(R.string.wallet_link_connected_message, newmWalletConnectionId)
+            // show message
+            context.shortToast(message)
             onConnectWallet(newmWalletConnectionId)
         }
     }
@@ -68,11 +69,7 @@ fun LinkWalletScreen(
     }
 
     val navigateToAppSettings = {
-        Toast.makeText(
-            context,
-            "NEWM Needs access to your camara in order to connect a wallet",
-            Toast.LENGTH_SHORT
-        ).show()
+        context.shortToast(context.getString(R.string.wallet_link_camera_is_needed))
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.fromParts("package", context.packageName, null)
         }

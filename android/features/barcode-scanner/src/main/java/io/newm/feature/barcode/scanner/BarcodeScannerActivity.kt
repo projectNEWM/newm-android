@@ -200,7 +200,7 @@ class BarcodeScannerActivity : ComponentActivity() {
             ) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back_description),
                     tint = White
                 )
             }
@@ -243,7 +243,7 @@ class BarcodeScannerActivity : ComponentActivity() {
             Icon(
                 modifier = Modifier.padding(start = 8.dp),
                 painter = painterResource(id = R.drawable.icon_copy_text),
-                contentDescription = "Copy",
+                contentDescription = stringResource(R.string.copy_description),
                 tint = GlassSmith
             )
         }

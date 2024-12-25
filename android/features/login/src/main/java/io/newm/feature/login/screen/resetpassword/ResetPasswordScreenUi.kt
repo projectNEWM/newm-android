@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.runtime.ui.Ui
-import io.newm.core.resources.R.string
+import io.newm.core.resources.R
 import io.newm.core.theme.NewmTheme
 import io.newm.core.ui.ToastSideEffect
 import io.newm.core.ui.buttons.PrimaryButton
@@ -99,12 +100,12 @@ private fun EnterEmailContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            "Forgot your password?",
+            stringResource(R.string.reset_password_forgot_your_password),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h1
         )
         Text(
-            "Enter your email to receive reset instructions.",
+            stringResource(R.string.reset_password_enter_email),
             style = MaterialTheme.typography.h2,
             color = MaterialTheme.colors.primary,
             textAlign = TextAlign.Center,
@@ -128,7 +129,7 @@ private fun EnterEmailContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
-            text = "Continue",
+            text = stringResource(R.string.reset_password_enter_email_continue),
             onClick = { eventSink(EnterEmailUiEvent.OnSubmit) },
             enabled = state.submitButtonEnabled,
         )
@@ -177,20 +178,20 @@ private fun SetNewPasswordContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Enter your new password",
+            text = stringResource(R.string.reset_password_enter_new_password),
             style = MaterialTheme.typography.h1,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.weight(1f))
         Password(
             modifier = Modifier.focusRequester(focusRequester),
-            label = string.reset_password_new_password,
+            label = R.string.reset_password_new_password,
             passwordState = state.password,
             keyboardOptions = TextFieldWithLabelDefaults.KeyboardOptions.PASSWORD.copy(imeAction = ImeAction.Next),
         )
 
         Password(
-            label = string.reset_password_confirm_new_password,
+            label = R.string.reset_password_confirm_new_password,
             passwordState = state.confirmPasswordState,
             keyboardOptions = TextFieldWithLabelDefaults.KeyboardOptions.PASSWORD.copy(
                 imeAction = ImeAction.Go,
@@ -209,7 +210,7 @@ private fun SetNewPasswordContent(
 
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Confirm",
+            text = stringResource(R.string.confirm),
             onClick = {
                 onEvent(EnterNewPasswordUiEvent.OnSubmit)
             },

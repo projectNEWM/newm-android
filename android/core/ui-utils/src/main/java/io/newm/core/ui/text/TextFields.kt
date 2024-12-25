@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.newm.core.resources.R
 import io.newm.core.theme.Gray100
 import io.newm.core.theme.Gray500
 import io.newm.core.theme.inter
@@ -194,14 +195,14 @@ fun PasswordTrailingIcon(isInputMasked: MutableState<Boolean>) {
             IconButton(onClick = { isInputMasked.value = false }) {
                 Icon(
                     imageVector = Icons.Filled.VisibilityOff,
-                    contentDescription = "Show Password"
+                    contentDescription = stringResource(R.string.show_password_description)
                 )
             }
         } else {
             IconButton(onClick = { isInputMasked.value = true }) {
                 Icon(
                     imageVector = Icons.Filled.Visibility,
-                    contentDescription = "Hide Password"
+                    contentDescription = stringResource(R.string.hide_password_description)
                 )
             }
         }

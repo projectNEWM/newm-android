@@ -49,7 +49,6 @@ import io.newm.core.theme.StatusGreen
 import io.newm.core.theme.SteelPink
 import io.newm.core.theme.White
 import io.newm.core.theme.inter
-import io.newm.core.theme.raleway
 import io.newm.core.ui.text.SearchBar
 import io.newm.core.ui.utils.drawWithBrush
 import io.newm.core.ui.utils.secondsToMinutesSecondsString
@@ -108,7 +107,7 @@ fun LibraryScreen(
                     onClick = {/*TODO*/ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_library_filter),
-                        contentDescription = "Filter",
+                        contentDescription = stringResource(R.string.filter_description),
                         modifier = Modifier
                             .drawWithBrush(LibraryBrush)
 
@@ -189,7 +188,7 @@ fun RevealedPanel(onDownloadClick: () -> Unit) {
             IconButton(onClick = onDownloadClick, modifier = Modifier.size(16.dp)) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_download),
-                    contentDescription = "Download"
+                    contentDescription = stringResource(R.string.library_download_description)
                 )
             }
             Text(
@@ -243,7 +242,7 @@ private fun LibraryCard(
                 if (songModel.isDownloaded) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_downloaded),
-                        contentDescription = "Downloaded",
+                        contentDescription = stringResource(R.string.downloaded_description),
                         tint = StatusGreen
                     )
                     Spacer(modifier = Modifier.size(4.dp))

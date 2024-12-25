@@ -6,16 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.google.android.recaptcha.RecaptchaAction
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.presenter.Presenter
+import io.newm.core.resources.R
 import io.newm.feature.login.screen.authproviders.RecaptchaClientProvider
 import io.newm.feature.login.screen.createaccount.CreateAccountUiState.EmailAndPasswordUiState
 import io.newm.feature.login.screen.createaccount.CreateAccountUiState.EmailVerificationUiState
 import io.newm.feature.login.screen.email.EmailState
 import io.newm.feature.login.screen.password.ConfirmPasswordState
-import io.newm.feature.login.screen.password.VerificationCodeState
 import io.newm.feature.login.screen.password.PasswordState
+import io.newm.feature.login.screen.password.VerificationCodeState
 import io.newm.shared.NewmAppLogger
 import io.newm.shared.public.analytics.NewmAppEventLogger
 import io.newm.shared.public.analytics.events.AppScreens
@@ -41,6 +43,7 @@ class CreateAccountScreenPresenter(
         val verificationCode = rememberRetained { VerificationCodeState() }
 
         val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
 
         val emailAndPasswordValid =
             remember(userEmail.isValid, password.isValid, passwordConfirmation.isValid) {
@@ -76,11 +79,16 @@ class CreateAccountScreenPresenter(
                                                 humanVerificationCode = token
                                             )
                                         }.onFailure {
-                                        errorMessage = "Are you even a human?"
-                                    }
+                                            errorMessage =
+                                                context.getString(R.string.invalid_recaptcha_message)
+                                        }
                                     Step.EmailVerification
                                 } catch (e: Throwable) {
-                                    appLogger.error(tag = "Sign up", message = "${e.message}", exception = e)
+                                    appLogger.error(
+                                        tag = "Sign up",
+                                        message = "${e.message}",
+                                        exception = e
+                                    )
                                     errorMessage = e.message
                                     Step.EmailAndPassword
                                 }
@@ -117,15 +125,26 @@ class CreateAccountScreenPresenter(
                                                 passwordConfirmation = passwordConfirmation.text,
                                                 humanVerificationCode = token,
                                             )
-                                            recaptchaClientProvider.get().execute(RecaptchaAction.LOGIN).onSuccess { newToken ->
-                                                loginUseCase.logIn(userEmail.text, password.text, humanVerificationCode = newToken)
-                                                navigateHome()
-                                            }
+                                            recaptchaClientProvider.get()
+                                                .execute(RecaptchaAction.LOGIN)
+                                                .onSuccess { newToken ->
+                                                    loginUseCase.logIn(
+                                                        userEmail.text,
+                                                        password.text,
+                                                        humanVerificationCode = newToken
+                                                    )
+                                                    navigateHome()
+                                                }
                                         }.onFailure {
-                                        errorMessage = "Are you even a human?"
-                                    }
+                                            errorMessage =
+                                                context.getString(R.string.invalid_recaptcha_message)
+                                        }
                                 } catch (e: Throwable) {
-                                    appLogger.error(tag = "Create Account", message = "Email verification: ${e.message}", exception = e)
+                                    appLogger.error(
+                                        tag = "Create Account",
+                                        message = "Email verification: ${e.message}",
+                                        exception = e
+                                    )
                                     errorMessage = e.message
                                     step = Step.EmailVerification
                                 }

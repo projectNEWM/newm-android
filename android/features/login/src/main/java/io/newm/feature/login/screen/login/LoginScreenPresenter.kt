@@ -6,12 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.google.android.recaptcha.RecaptchaAction
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import io.newm.feature.login.screen.ResetPasswordScreen
+import io.newm.core.resources.R
 import io.newm.feature.login.screen.HomeScreen
+import io.newm.feature.login.screen.ResetPasswordScreen
 import io.newm.feature.login.screen.authproviders.RecaptchaClientProvider
 import io.newm.feature.login.screen.email.EmailState
 import io.newm.feature.login.screen.password.PasswordState
@@ -39,6 +41,7 @@ class LoginScreenPresenter(
         var isLoading by remember { mutableStateOf(false) }
 
         val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
 
         return LoginScreenUiState(
             emailState = email,
@@ -53,20 +56,30 @@ class LoginScreenPresenter(
                         coroutineScope.launch {
                             errorMessage = null
 
-                            if(!isFormValid){
-                                errorMessage = "Invalid form" // todo update with proper error message
+                            if (!isFormValid) {
+                                // todo update with proper error message
+                                errorMessage = context.getString(
+                                    R.string.login_invalid_form_message
+                                )
                                 return@launch
                             }
 
                             isLoading = true
                             try {
-                                recaptchaClientProvider.get().execute(RecaptchaAction.LOGIN).onSuccess { token ->
-                                    loginUseCase.logIn(email.text, password.text, humanVerificationCode = token)
-                                    navigator.goTo(HomeScreen)
-                                }.onFailure {
-                                    errorMessage = "Are you even human?"
-                                    isLoading = false
-                                }
+                                recaptchaClientProvider.get().execute(RecaptchaAction.LOGIN)
+                                    .onSuccess { token ->
+                                        loginUseCase.logIn(
+                                            email.text,
+                                            password.text,
+                                            humanVerificationCode = token
+                                        )
+                                        navigator.goTo(HomeScreen)
+                                    }.onFailure {
+                                        errorMessage = context.getString(
+                                            R.string.invalid_recaptcha_message
+                                        )
+                                        isLoading = false
+                                    }
 
                             } catch (e: Throwable) {
                                 logger.error("LoginScreenPresenter", "Login failed", e)

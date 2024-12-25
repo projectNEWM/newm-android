@@ -15,16 +15,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.newm.core.resources.R
 import io.newm.core.ui.ToastSideEffect
 import io.newm.core.ui.buttons.PrimaryButton
 import io.newm.core.ui.text.TextFieldWithLabel
 import io.newm.core.ui.text.TextFieldWithLabelDefaults
 import io.newm.feature.login.screen.TextFieldState
-import io.newm.core.resources.R
 
 @Composable
 internal fun EmailVerificationUi(
@@ -65,12 +66,12 @@ internal fun EmailVerificationContent(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Check your email",
+                text = stringResource(id = R.string.login_check_your_email),
                 color = MaterialTheme.colors.onBackground,
                 style = MaterialTheme.typography.h1
             )
             Text(
-                text = "Enter your \nverification code \nbelow",
+                text = stringResource(id = R.string.login_enter_verification_code_below),
                 color = MaterialTheme.colors.primary,
                 style = MaterialTheme.typography.h1,
                 textAlign = TextAlign.Center,
@@ -78,14 +79,14 @@ internal fun EmailVerificationContent(
             )
             Spacer(modifier = Modifier.height(100.dp))
             Text(
-                text = "Didn't receive an email? Click here to resend",
+                text = stringResource(id = R.string.login_receive_email),
                 color = MaterialTheme.colors.primary,
                 style = MaterialTheme.typography.caption
             )
             Spacer(modifier = Modifier.height(36.dp))
 
             TextFieldWithLabel(
-                labelResId = R.string.loginEnter_verification_code,
+                labelResId = R.string.login_enter_verification_code,
                 value = verificationCode.text,
                 onValueChange = verificationCode::text::set,
                 keyboardOptions = TextFieldWithLabelDefaults.KeyboardOptions.Digits.copy(imeAction = ImeAction.Go),
@@ -100,7 +101,7 @@ internal fun EmailVerificationContent(
 
             Spacer(modifier = Modifier.height(16.dp))
             PrimaryButton(
-                text = "Continue",
+                text = stringResource(id = R.string.login_continue),
                 enabled = nextButtonEnabled,
                 onClick = {
                     onNextClicked()

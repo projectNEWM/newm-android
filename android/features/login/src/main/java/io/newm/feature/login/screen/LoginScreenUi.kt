@@ -10,17 +10,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +37,6 @@ import io.newm.feature.login.screen.login.LoginScreenUiState
 import io.newm.feature.login.screen.login.LoginUiEvent.ForgotPasswordClick
 import io.newm.feature.login.screen.login.LoginUiEvent.OnLoginClick
 import io.newm.feature.login.screen.password.Password
-import io.newm.feature.login.screen.welcome.WelcomeScreenUiEvent.CreateAccountClicked
 
 internal const val TAG_LOGIN_SCREEN = "TAG_LOGIN_SCREEN"
 
@@ -63,7 +61,7 @@ internal fun LoginScreenContent(
         isLoading = state.isLoading,
         header = {
             Text(
-                text = "Forgot your password?",
+                text = stringResource(id = R.string.reset_password_forgot_your_password),
                 fontSize = 16.sp,
                 fontFamily = inter,
                 fontWeight = FontWeight.Medium,
@@ -102,7 +100,7 @@ internal fun LoginScreenContent(
         Spacer(modifier = Modifier.height(32.dp))
 
         PrimaryButton(
-            text = "Login",
+            text = stringResource(id = R.string.login),
             onClick = { eventSink(OnLoginClick) },
             enabled = state.submitButtonEnabled,
         )
@@ -117,7 +115,7 @@ fun LoginPageMainImage(@DrawableRes mainImage: Int) {
             .width(250.dp)
             .height(250.dp),
         painter = painterResource(mainImage),
-        contentDescription = "Newm Login Logo",
+        contentDescription = stringResource(id = R.string.newm_login_logo_description),
         contentScale = ContentScale.Crop,
     )
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
 import io.newm.core.resources.R
 import io.newm.core.ui.text.TextFieldWithLabel
 import io.newm.core.ui.text.TextFieldWithLabelDefaults
@@ -19,6 +20,8 @@ fun Email(
     keyboardOptions: KeyboardOptions = TextFieldWithLabelDefaults.KeyboardOptions.EMAIL,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
+    val context = LocalContext.current
+
     TextFieldWithLabel(
         modifier = modifier
             .fillMaxWidth()
@@ -34,7 +37,7 @@ fun Email(
         isError = emailState.showErrors(),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        helperText = emailState.getError(),
+        helperText = emailState.getError(context),
         singleLine = true,
     )
 }

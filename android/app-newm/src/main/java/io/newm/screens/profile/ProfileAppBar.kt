@@ -11,7 +11,9 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.newm.core.resources.R
 import io.newm.screens.profile.edit.ScrimCircle
 
 @Composable
@@ -35,7 +37,10 @@ fun ProfileAppBar(
                 {
                     ScrimCircle {
                         IconButton(onClick = onNavigationClick) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back_description)
+                            )
                         }
                     }
                 }
@@ -43,7 +48,10 @@ fun ProfileAppBar(
             actions = {
                 ScrimCircle {
                     IconButton(onClick = onOverflowTapped) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "Overflow")
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.overflow_description)
+                        )
                     }
                 }
             }

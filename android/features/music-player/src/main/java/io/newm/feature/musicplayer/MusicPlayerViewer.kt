@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
@@ -156,7 +157,7 @@ internal fun MusicPlayerViewer(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_down),
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.back_description),
                         tint = White
                     )
                 }
@@ -305,7 +306,7 @@ fun ShuffleButton(
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_music_player_shuffle),
-            contentDescription = "Shuffle",
+            contentDescription = stringResource(R.string.music_player_shuffle_description),
             tint = when {
                 enabled.not() -> Gray500
                 shuffleMode -> DarkViolet
@@ -350,7 +351,7 @@ private fun PreviousTrackButton(
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_prev_track_default),
-            contentDescription = "Skip previous",
+            contentDescription = stringResource(R.string.music_player_prev_track_description),
             tint = Color.White
         )
     }
@@ -364,7 +365,7 @@ private fun PlayButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_play),
-            contentDescription = "Play",
+            contentDescription = stringResource(R.string.music_player_play_description),
             modifier = Modifier.drawWithBrush(MusicPlayerBrush)
         )
     }
@@ -375,7 +376,7 @@ fun PauseButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     IconButton(modifier = modifier, onClick = onClick) {
         Icon(
             painter = painterResource(id = R.drawable.ic_pause),
-            contentDescription = "Pause",
+            contentDescription = stringResource(R.string.music_player_pause_description),
             modifier = Modifier.drawWithBrush(MusicPlayerBrush)
         )
     }
@@ -386,7 +387,7 @@ fun NextTrackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     IconButton(modifier = modifier, onClick = onClick) {
         Icon(
             painter = painterResource(id = R.drawable.ic_next_track_default),
-            contentDescription = "Skip next",
+            contentDescription = stringResource(R.string.music_player_next_track_description),
             tint = Color.White
         )
     }
@@ -407,7 +408,7 @@ fun RepeatButton(
     IconButton(modifier = modifier, onClick = onClick) {
         Icon(
             painter = painterResource(id = imageRes),
-            contentDescription = "Repeat",
+            contentDescription = stringResource(R.string.music_player_repeat_description),
             tint = if (repeatMode == PlaybackRepeatMode.REPEAT_OFF) White else DarkViolet
         )
     }

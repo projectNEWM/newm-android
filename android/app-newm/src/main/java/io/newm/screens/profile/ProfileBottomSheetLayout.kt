@@ -64,7 +64,7 @@ fun ProfileBottomSheetLayout(
                 )
                 Column(modifier = Modifier.padding(16.dp)) {
                     SecondaryButton(
-                        labelResId = R.string.profile_privacy_policy,
+                        labelResId = R.string.privacy_policy,
                         onClick = onShowPrivacyPolicy
                     )
                     Spacer(modifier = Modifier.height(16.dp))
