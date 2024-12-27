@@ -5,6 +5,7 @@ import ModuleLinker
 import Utilities
 import Colors
 import Analytics
+import QRCodeReader
 
 @MainActor
 public struct ConnectWalletToAccountScannerView: View {
@@ -12,25 +13,33 @@ public struct ConnectWalletToAccountScannerView: View {
 	@State private var manuallyEnteredCode: String = ""
 	@Injected private var connectWalletToAccountUseCase: any ConnectWalletUseCase
 	@State private var isLoading = false
-	@State private var showHelpSheet = true
+	@State private var showHelpSheet = false
 	@State private var showCopiedToast = false
+	
 	@State private var error: Error? {
 		didSet {
-			error.flatMap(Resolver.resolve(ErrorReporting.self).logError)
+			let errorReporter = Resolver.resolve(ErrorReporting.self)
+			if errorIsCameraPermissionDenied {
+				errorReporter.logBreadcrumb("Camera permission denied", level: .info)
+			} else {
+				error.flatMap(errorReporter.logError)
+			}
 		}
 	}
+
 	private let toolsUrl = "https://tools.newm.io/"
-	
+
 	public init(completion: @escaping () -> Void) {
 		self.completion = completion
 	}
-	
+
 	public var body: some View {
 		VStack {
 			HStack {
 				title.padding()
 				Spacer()
 			}
+			
 			VStack {
 				QRCodeScannerView { result in
 					switch result {
@@ -43,19 +52,42 @@ public struct ConnectWalletToAccountScannerView: View {
 				.frame(width: 346, height: 337)
 				.clipShape(RoundedRectangle(cornerRadius: 32))
 			}
+			
 			manualEntry
 			Spacer()
 			bottomButtons
+		}
+		.onAppear {
+			checkScanPermissions()
 		}
 		.sheet(isPresented: $showHelpSheet) {
 			ScannerHelpSheet(showSheet: $showHelpSheet, showCopiedToast: $showCopiedToast)
 				.presentationDetents([.height(322)])
 		}
-		.alert("Error", isPresented: isPresent($error)) {
-			Button {
-				error = nil
-			} label: {
-				Text("Ok")
+		.alert(errorTitle, isPresented: isPresent($error)) {
+			if errorIsCameraPermissionDenied {
+				Button("Cancel") {
+					error = nil
+					showHelpSheet = true
+				}
+				Button("Settings") {
+					if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+						UIApplication.shared.open(settingsURL)
+					}
+					error = nil
+					showHelpSheet = true
+				}
+			} else {
+				Button("OK") {
+					error = nil
+					showHelpSheet = true
+				}
+			}
+		} message: {
+			if errorIsCameraPermissionDenied {
+				Text("This app is not authorized to use the camera.  Please go to Settings and allow access.")
+			} else {
+				Text("An unknown error occurred.")
 			}
 		}
 		.loadingToast(shouldShow: $isLoading)
@@ -63,7 +95,7 @@ public struct ConnectWalletToAccountScannerView: View {
 		.background(.black)
 		.analyticsScreen(name: AppScreens.ConnectWalletScannerScreen().name)
 	}
-	
+
 	@ViewBuilder
 	private var bottomButtons: some View {
 		VStack {
@@ -71,7 +103,7 @@ public struct ConnectWalletToAccountScannerView: View {
 				UIPasteboard.general.string = toolsUrl
 				Task {
 					showCopiedToast = true
-					try! await Task.sleep(for: .seconds(1))
+					try? await Task.sleep(for: .seconds(1))
 					showCopiedToast = false
 				}
 			}) {
@@ -85,7 +117,7 @@ public struct ConnectWalletToAccountScannerView: View {
 				.foregroundStyle(NEWMColor.midCrypto())
 				.cornerRadius(12)
 			}
-			
+
 			Button(action: {
 				showHelpSheet = true
 			}) {
@@ -99,7 +131,7 @@ public struct ConnectWalletToAccountScannerView: View {
 		}
 		.padding()
 	}
-	
+
 	@ViewBuilder
 	private var title: some View {
 		Text("Connect Wallet")
@@ -109,7 +141,7 @@ public struct ConnectWalletToAccountScannerView: View {
 			)
 			.foregroundStyle(Gradients.mainSecondary)
 	}
-		
+	
 	@ViewBuilder
 	private var manualEntry: some View {
 		VStack(alignment: .leading, spacing: 4) {
@@ -146,7 +178,7 @@ public struct ConnectWalletToAccountScannerView: View {
 		.padding(.top)
 		.frame(width: 358, alignment: .topLeading)
 	}
-	
+
 	private func success(id: String) {
 		isLoading = true
 		Task {
@@ -159,9 +191,30 @@ public struct ConnectWalletToAccountScannerView: View {
 			}
 		}
 	}
+
+	private func checkScanPermissions() {
+		do {
+			_ = try QRCodeReader.supportsMetadataObjectTypes()
+			showHelpSheet = true
+		} catch {
+			self.error = error
+		}
+	}
+	
+	private var errorIsCameraPermissionDenied: Bool {
+		(error as? NSError)?.code == -11852
+	}
+	
+	private var errorTitle: String {
+		if errorIsCameraPermissionDenied {
+			"Camera Access Required"
+		} else {
+			"Error"
+		}
+	}
 }
 
 #Preview {
-	let view = ConnectWalletToAccountScannerView { }
+	ConnectWalletToAccountScannerView { }
 		.preferredColorScheme(.dark)
 }
