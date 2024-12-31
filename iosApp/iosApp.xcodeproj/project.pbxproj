@@ -2858,11 +2858,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
-				761E97462B6BE15200FDFC5E /* Upload Sentry Debug Files */,
 				7555FF77242A565900829871 /* Sources */,
 				7555FF78242A565900829871 /* Frameworks */,
 				7555FF79242A565900829871 /* Resources */,
 				7628EBD227E550140077ECFD /* Embed Frameworks */,
+				761E97462B6BE15200FDFC5E /* Upload Sentry Debug Files */,
 			);
 			buildRules = (
 			);
@@ -3834,6 +3834,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 			);
 			name = "Upload Sentry Debug Files";
 			outputFileListPaths = (
@@ -3842,7 +3843,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" == \"Release\" ]; then\n\tif which sentry-cli >/dev/null; then\n\t\texport SENTRY_ORG=project-newm\n\t\texport SENTRY_PROJECT=newm-ios\n\t\texport SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN\n\t\tERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null --log-level=debug)\n\t\tif [ ! $? -eq 0 ]; then\n\t\t\techo \"warning: sentry-cli - $ERROR\"\n\t\tfi\n\t\telse\n\t\t\techo \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\n\tfi\nfi\n";
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=project-newm\nexport SENTRY_PROJECT=android\nexport SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN\nERROR=$(sentry-cli debug-files upload \\\n\"$DWARF_DSYM_FOLDER_PATH\" --force-foreground 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"error: sentry-cli - $ERROR\"\nfi\nelse\necho \"error: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
 		};
 		762515292CA8DA210039C8BD /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
