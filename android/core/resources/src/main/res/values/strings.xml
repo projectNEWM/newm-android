@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="account">Account</string>
-    <string name="and"> and </string>
+    <string name="and">\u0020and\u0020</string>
     <string name="app_name" translatable="false">NEWM</string>
     <string name="artist_list_songs">%s Songs</string>
     <string name="back_description">Back</string>
@@ -88,7 +88,7 @@
     <string name="password_reset_successfully_message">Password reset successfully</string>
     <string name="password_validation_error_message">Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.</string>
     <string name="previous">Previous</string>
-    <string name="privacy_continue">By continuing, I agree to NEWM\'s \n</string>
+    <string name="privacy_continue">By continuing, I agree to NEWM\'s\n</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="profile">Profile</string>
     <string name="profile_add_music">Looking to add more to your epic music stash?</string>

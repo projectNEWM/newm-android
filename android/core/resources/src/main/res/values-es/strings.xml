@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="account">Cuenta</string>
-    <string name="and"> y </string>
+    <string name="and">\u0020y\u0020</string>
     <string name="artist_list_songs">%s Canciones</string>
     <string name="back_description">Atrás</string>
     <string name="barcode_help_text">¿Cómo puedo conectar una billetera?</string>
@@ -87,7 +87,7 @@
     <string name="password_reset_successfully_message">Contraseña restablecida con éxito</string>
     <string name="password_validation_error_message">La contraseña debe tener al menos 8 caracteres, 1 letra mayúscula, 1 letra minúscula y 1 número.</string>
     <string name="previous">Anterior</string>
-    <string name="privacy_continue">Al continuar, acepto los términos de NEWM</string>
+    <string name="privacy_continue">Al continuar, acepto los términos de NEWM\n</string>
     <string name="privacy_policy">Política de privacidad</string>
     <string name="profile">Perfil</string>
     <string name="profile_add_music">¿Buscas agregar más a tu increíble colección de música?</string>
