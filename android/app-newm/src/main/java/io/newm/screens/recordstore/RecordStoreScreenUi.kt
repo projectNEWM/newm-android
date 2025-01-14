@@ -3,12 +3,13 @@ package io.newm.screens.recordstore
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import io.newm.core.resources.R
 import io.newm.core.ui.LoadingScreen
 import io.newm.core.ui.utils.ErrorScreen
 import io.newm.core.ui.webview.FullScreenWebView
@@ -45,8 +46,8 @@ fun RecordStoreScreenUi(
 
             RecordStoreState.Error -> {
                 ErrorScreen(
-                    title = "Connection Lost",
-                    message = "It looks like you're not connected to the internet. Please check your connection and try again."
+                    title = stringResource(R.string.record_store_error_title),
+                    message = stringResource(R.string.record_store_error_message)
                 )
             }
         }

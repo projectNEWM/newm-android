@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.newm.core.resources.R
 import io.newm.core.theme.DarkViolet
 import io.newm.core.theme.Pinkish
 import io.newm.core.theme.Purple
@@ -65,7 +66,7 @@ fun PrimaryButton(
         enabledIconRes?.takeIf { enabled }?.let {
             Icon(
                 painter = painterResource(id = it),
-                contentDescription = "Check",
+                contentDescription = stringResource(R.string.check_icon_description),
                 tint = White,
             )
             Spacer(modifier = Modifier.size(8.dp))

@@ -60,6 +60,7 @@ import io.newm.core.ui.permissions.doWithPermission
 import io.newm.core.ui.permissions.rememberRequestPermissionIntent
 import io.newm.core.ui.utils.drawWithBrush
 import io.newm.core.ui.utils.iconGradient
+import io.newm.core.ui.utils.shortToast
 import io.newm.feature.barcode.scanner.BarcodeScannerActivity
 import io.newm.screens.profile.OnConnectWallet
 import io.newm.screens.profile.OnDisconnectWallet
@@ -265,8 +266,11 @@ private fun WalletButton(
             // Do something with the data
             val newmWalletConnectionId =
                 data?.getStringExtra(BarcodeScannerActivity.NEWM_WALLET_CONNECTION_ID).orEmpty()
-            Toast.makeText(context, "Wallet connected $newmWalletConnectionId", Toast.LENGTH_SHORT)
-                .show()
+            // create message
+            val message =
+                context.getString(R.string.wallet_link_connected_message, newmWalletConnectionId)
+            // show message
+            context.shortToast(message)
             onConnectWalletClick(newmWalletConnectionId)
         }
     }
@@ -288,8 +292,8 @@ private fun WalletButton(
             textStyle = disconnectButtonLabelStyle
         )
         ConfirmationDialog(
-            title = "Unlink Cardano Wallet",
-            message = "Are you sure you want to disconnect your wallet?",
+            title = stringResource(R.string.profile_unlink_dialog_title),
+            message = stringResource(R.string.profile_unlink_dialog_message),
             eventLogger = eventLogger,
             isOpen = openWalletDialog,
             onConfirm = {

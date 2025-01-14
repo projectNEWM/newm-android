@@ -7,7 +7,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.newm.core.resources.R
 import io.newm.core.ui.text.formEmailStyle
 import io.newm.core.ui.text.formNameStyle
 
@@ -24,7 +26,7 @@ fun ProfileHeader(
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
             .fillMaxWidth()
             .wrapContentWidth(Alignment.CenterHorizontally),
-        text = fullName.ifEmpty { "Welcome to NEWM" },
+        text = fullName.ifEmpty { stringResource(R.string.profile_header_welcome) },
         style = formNameStyle
     )
     Text(

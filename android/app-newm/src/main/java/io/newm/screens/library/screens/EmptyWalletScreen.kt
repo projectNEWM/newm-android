@@ -14,8 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.newm.core.resources.R
 import io.newm.core.ui.buttons.PrimaryButton
 import io.newm.shared.public.analytics.NewmAppEventLogger
 import io.newm.shared.public.analytics.events.AppScreens
@@ -32,14 +34,14 @@ fun EmptyWalletScreen(eventLogger: NewmAppEventLogger) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "No NFTs yet?",
+                text = stringResource(id = R.string.wallet_empty_title),
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "You can buy NFTs from our marketplace",
+                text = stringResource(id = R.string.wallet_empty_subtitle),
                 style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -47,7 +49,7 @@ fun EmptyWalletScreen(eventLogger: NewmAppEventLogger) {
 
             PrimaryButton(
                 modifier = Modifier.padding(all = 16.dp),
-                text = "Visit the Record Store",
+                text = stringResource(id = R.string.wallet_empty_button),
                 onClick = {
                     eventLogger.logClickEvent(AppScreens.NFTLibraryEmptyWalletScreen.VISIT_RECORDS_BUTTON)
                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(RECORD_STORE_URL)))

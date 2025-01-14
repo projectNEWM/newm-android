@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import io.newm.core.resources.R
 
 @Composable
@@ -24,7 +25,7 @@ fun ShareButton(
     }) {
         Icon(
             painter = painterResource(id = R.drawable.ic_share),
-            contentDescription = "Share Song",
+            contentDescription = stringResource(id = R.string.share_button_icon_description),
             tint = Color.White
         )
     }
@@ -41,6 +42,6 @@ fun shareSong(context: Context, songTitle: String, songArtist: String) {
         putExtra(Intent.EXTRA_TEXT, randomPhrase)
         type = "text/plain"
     }
-    val chooser = Intent.createChooser(shareIntent, "Share song via")
+    val chooser = Intent.createChooser(shareIntent, context.getString(R.string.share_chooser_title))
     context.startActivity(chooser)
 }

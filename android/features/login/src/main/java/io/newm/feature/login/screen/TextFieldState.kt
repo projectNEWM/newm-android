@@ -1,5 +1,6 @@
 package io.newm.feature.login.screen
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,7 +8,7 @@ import androidx.compose.runtime.setValue
 open class TextFieldState(
     defaultValue: String = "",
     private val validator: (String) -> Boolean = { true },
-    private val errorFor: (String) -> String = { "" }
+    private val errorFor: (Context, String) -> String = { _, _ -> "" }
 ) {
     var text: String by mutableStateOf(defaultValue)
 
@@ -33,9 +34,13 @@ open class TextFieldState(
 
     fun showErrors() = !isValid && displayErrors
 
-    open fun getError(): String? {
+    /**
+     * Gets error string
+     * @param context   needed for fetching string resource
+     */
+    open fun getError(context: Context): String? {
         return if (showErrors()) {
-            errorFor(text)
+            errorFor(context, text)
         } else {
             null
         }

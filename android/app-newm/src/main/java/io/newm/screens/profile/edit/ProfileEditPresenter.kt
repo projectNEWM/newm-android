@@ -1,15 +1,18 @@
 package io.newm.screens.profile.edit
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import io.newm.Logout
+import io.newm.core.resources.R
 import io.newm.feature.login.screen.TextFieldState
 import io.newm.feature.login.screen.password.isPasswordValid
 import io.newm.feature.login.screen.password.passwordValidationError
@@ -50,6 +53,8 @@ class ProfileEditPresenter(
             hasWalletConnectionsUseCase.hasWalletConnectionsFlow()
         }.collectAsState(initial = false)
 
+        val context = LocalContext.current
+
         val profile = remember(storedUser) {
             storedUser?.let { user ->
                 ProfileEditUiState.Content.Profile(
@@ -82,7 +87,7 @@ class ProfileEditPresenter(
         val confirmPasswordState = remember {
             TextFieldState()
         }
-        
+
         var errorMessage by remember {
             mutableStateOf<String?>(null)
         }
@@ -127,6 +132,7 @@ class ProfileEditPresenter(
                         coroutineScope.launch {
                             try {
                                 val error = getFormErrorOrNull(
+                                    context,
                                     currentPasswordState,
                                     newPasswordState,
                                     confirmPasswordState,
@@ -167,14 +173,17 @@ class ProfileEditPresenter(
                         eventLogger.logClickEvent(AppScreens.AccountScreen.LOGOUT_BUTTON)
                         logout.signOutUser()
                     }
+
                     OnShowTermsAndConditions -> {
                         eventLogger.logClickEvent(AppScreens.AccountScreen.TERMS_AND_CONDITIONS_BUTTON)
                         navigator.goTo(TermsOfService)
                     }
+
                     OnShowPrivacyPolicy -> {
                         eventLogger.logClickEvent(AppScreens.AccountScreen.PRIVACY_POLICY_BUTTON)
                         navigator.goTo(PrivacyPolicy)
                     }
+
                     OnBack -> {
                         eventLogger.logClickEvent(AppScreens.EditProfileScreen.BACK_BUTTON)
                         navigator.pop()
@@ -196,6 +205,7 @@ class ProfileEditPresenter(
      */
 
     private fun getFormErrorOrNull(
+        context: Context,
         currentPasswordState: TextFieldState,
         newPasswordState: TextFieldState,
         confirmPasswordState: TextFieldState,
@@ -203,27 +213,27 @@ class ProfileEditPresenter(
         lastNameState: TextFieldState
     ): String? {
         if (newPasswordState.text.isNotEmpty() && isPasswordValid(newPasswordState.text).not()) {
-            return passwordValidationError(newPasswordState.text)
+            return passwordValidationError(context)
         }
 
         if (newPasswordState.text.isNotEmpty() && newPasswordState.text != confirmPasswordState.text) {
-            return "Passwords do not match"
+            return context.getString(R.string.password_confirmation_error_message)
         }
 
         if (newPasswordState.text.isNotEmpty() && confirmPasswordState.text.isEmpty()) {
-            return "Please confirm your new password"
+            return context.getString(R.string.profile_confirm_new_password)
         }
 
         if (newPasswordState.text.isNotEmpty() && currentPasswordState.text.isEmpty()) {
-            return "Please enter your current password"
+            return context.getString(R.string.profile_enter_current_password)
         }
 
         if (firstNameState.text.isEmpty()) {
-            return "Please enter your name"
+            return context.getString(R.string.profile_enter_first_name)
         }
 
         if (lastNameState.text.isEmpty()) {
-            return "Please enter your last name"
+            return context.getString(R.string.profile_enter_last_name)
         }
 
         return null

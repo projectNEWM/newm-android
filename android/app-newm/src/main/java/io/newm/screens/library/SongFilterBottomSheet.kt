@@ -161,7 +161,7 @@ private fun SongFilterButton(
             if (isSelected) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_library_filter_check),
-                    contentDescription = "Check",
+                    contentDescription = stringResource(R.string.check_icon_description),
                     tint = Black,
                 )
             }

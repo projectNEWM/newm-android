@@ -11,3 +11,8 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
+
+dependencies {
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.core.splashscreen)
+}

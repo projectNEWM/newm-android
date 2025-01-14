@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +51,7 @@ import io.newm.feature.musicplayer.models.Track
 import io.newm.feature.musicplayer.service.MusicPlayer
 import io.newm.shared.public.analytics.NewmAppEventLogger
 import kotlinx.coroutines.launch
+import io.newm.core.resources.R as CoreR
 
 
 @Composable
@@ -187,7 +189,7 @@ fun MiniPlayer(
                                     }
                                 }
                             }),
-                            contentDescription = "artwork",
+                            contentDescription = stringResource(id = CoreR.string.mini_player_artwork_description),
                             contentScale = ContentScale.FillBounds,
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -215,7 +217,7 @@ fun MiniPlayer(
                             PlaybackState.STOPPED -> {
                                 Icon(
                                     Icons.Default.PlayArrow,
-                                    contentDescription = "Play",
+                                    contentDescription = stringResource(CoreR.string.mini_player_play_arrow_description),
                                 )
                             }
 
@@ -223,7 +225,7 @@ fun MiniPlayer(
                             PlaybackState.BUFFERING -> {
                                 Icon(
                                     Icons.Default.Pause,
-                                    contentDescription = "Pause",
+                                    contentDescription = stringResource(CoreR.string.mini_player_pause_description),
                                 )
                             }
                         }

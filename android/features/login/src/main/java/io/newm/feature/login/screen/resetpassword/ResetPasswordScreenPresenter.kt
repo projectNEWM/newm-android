@@ -6,10 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.google.android.recaptcha.RecaptchaAction
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import io.newm.core.resources.R
 import io.newm.feature.login.screen.HomeScreen
 import io.newm.feature.login.screen.authproviders.RecaptchaClientProvider
 import io.newm.feature.login.screen.email.EmailState
@@ -52,6 +54,7 @@ class ResetPasswordScreenPresenter(
         val password = remember { PasswordState() }
         val passwordConfirmation = remember(password) { ConfirmPasswordState(password) }
         val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
 
         return when (step) {
             ResetPasswordStep.EnterEmail -> {
@@ -78,12 +81,12 @@ class ResetPasswordScreenPresenter(
                                                 )
                                                 step = ResetPasswordStep.EnterVerificationCode
                                             }.onFailure {
-                                            logger.error(
-                                                "ResetPasswordScreenPresenter",
-                                                "Human verification error",
-                                                it
-                                            )
-                                        }
+                                                logger.error(
+                                                    "ResetPasswordScreenPresenter",
+                                                    "Human verification error",
+                                                    it
+                                                )
+                                            }
                                     } catch (e: Throwable) {
                                         logger.error(
                                             "ResetPasswordScreenPresenter",
@@ -145,7 +148,7 @@ class ResetPasswordScreenPresenter(
                                                     confirmPassword = passwordConfirmation.text,
                                                     humanVerificationCode = token
                                                 )
-                                                errorMessage = "Password reset successfully"
+                                                errorMessage = context.getString(R.string.password_reset_successfully_message)
                                                 recaptchaClientProvider.get()
                                                     .execute(RecaptchaAction.LOGIN)
                                                     .onSuccess { newToken ->
@@ -157,12 +160,12 @@ class ResetPasswordScreenPresenter(
                                                         navigator.goTo(HomeScreen)
                                                     }
                                             }.onFailure {
-                                            logger.error(
-                                                "ResetPasswordScreenPresenter",
-                                                "Human verification error",
-                                                it
-                                            )
-                                        }
+                                                logger.error(
+                                                    "ResetPasswordScreenPresenter",
+                                                    "Human verification error",
+                                                    it
+                                                )
+                                            }
                                     } catch (e: Throwable) {
                                         logger.error(
                                             "ResetPasswordScreenPresenter",

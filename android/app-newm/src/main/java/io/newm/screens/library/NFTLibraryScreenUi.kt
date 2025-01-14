@@ -128,7 +128,7 @@ fun NFTLibraryScreenUi(
                     eventLogger.logPageLoad(AppScreens.ErrorScreen.name)
                 }
                 ErrorScreen(
-                    title = "Oops, something went wrong!",
+                    title = stringResource(R.string.nft_library_error_message),
                     message =state.message)
             }
 
@@ -219,7 +219,7 @@ private fun NFTTracks(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_library_filter),
-                            contentDescription = "Filter",
+                            contentDescription = stringResource(R.string.filter_description),
                             modifier = Modifier.drawWithBrush(LibraryBrush)
                         )
                     }
@@ -347,7 +347,7 @@ private fun TrackRowItem(
                 if (track.isDownloaded) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_downloaded),
-                        contentDescription = "Downloaded",
+                        contentDescription = stringResource(R.string.downloaded_description),
                         tint = StatusGreen
                     )
                     Spacer(modifier = Modifier.size(4.dp))

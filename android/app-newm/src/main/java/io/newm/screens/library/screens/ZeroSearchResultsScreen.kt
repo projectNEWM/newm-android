@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.newm.core.resources.R
 import io.newm.screens.library.TAG_NFT_LIBRARY_SCREEN
 
 @Composable
@@ -28,7 +30,7 @@ fun ZeroSearchResults() {
         ) {
             Text(
                 modifier = Modifier.padding(all = 16.dp),
-                text = "No results found."
+                text = stringResource(id = R.string.search_zero_results)
             )
         }
     }
