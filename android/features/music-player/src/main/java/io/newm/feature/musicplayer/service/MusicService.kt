@@ -6,10 +6,19 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
+import androidx.annotation.OptIn
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.cache.Cache
+import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import org.koin.android.ext.android.inject
 
+@UnstableApi
 class MediaService : MediaSessionService() {
     private lateinit var mediaSession: MediaSession
     private lateinit var audioManager: AudioManager
@@ -19,6 +28,8 @@ class MediaService : MediaSessionService() {
     private var playbackDelayed = false
     private var playBackAuthorized = false
     private var resumeOnFocusGain = false
+
+    private val downloadCache: Cache by inject()
 
     companion object {
         private const val DUCKING_VOLUME = 0.2f
@@ -75,16 +86,32 @@ class MediaService : MediaSessionService() {
             .build()
     }
 
+    @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        player = ExoPlayer.Builder(this).build()
+
+        player = ExoPlayer.Builder(this)
+            .setMediaSourceFactory(buildMediaSourceFactory())
+            .build()
 
         mediaSession = MediaSession.Builder(this, player)
             .setSessionActivity()
             .setCallback(MediaSessionCallback())
             .build()
 
+    }
+
+    private fun buildMediaSourceFactory(): DefaultMediaSourceFactory {
+        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+
+        val cacheDataSourceFactory: DataSource.Factory =
+            CacheDataSource.Factory()
+                .setCache(downloadCache)
+                .setUpstreamDataSourceFactory(httpDataSourceFactory)
+                .setCacheWriteDataSinkFactory(null) // Disable writing.
+        
+        return DefaultMediaSourceFactory(this).setDataSourceFactory(cacheDataSourceFactory)
     }
 
     private fun MediaSession.Builder.setSessionActivity(): MediaSession.Builder {

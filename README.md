@@ -98,7 +98,7 @@ Don't forget to give the project a star! ⭐️
   <tr>
     <td align="center"><a href="https://github.com/martyu"><img src="https://avatars.githubusercontent.com/u/595982?v=4" width="100px;" alt=""/><br /><sub><b>Marty Ulrich</b></sub></a><br /> </td>
     <td align="center"><a href="https://github.com/cristhianescobar"><img src="https://avatars.githubusercontent.com/u/5350018?v=4" width="100px;" alt=""/><br /><sub><b>Cristhian Escobar</b></sub></a><br /> </td>
-    <td align="center"><a href="https://github.com/j-mateo"><img src="https://avatars.githubusercontent.com/u/3849278?v=4" width="100px;" alt=""/><br /><sub><b>Jose Mateo</b></sub></a><br /> </td>
+    <td align="center"><a href="https://github.com/newmskywalker"><img src="https://avatars.githubusercontent.com/u/3849278?v=4" width="100px;" alt=""/><br /><sub><b>Skywalker</b></sub></a><br /> </td>
     <td align="center"><a href="https://github.com/Jermainelr"><img src="https://avatars.githubusercontent.com/u/29381704?v=4" width="100px;" alt=""/><br /><sub><b>Jermaine Lara</b></sub></a><br /> </td>
     <td align="center"><a href="https://github.com/wlara"><img src="https://avatars.githubusercontent.com/u/13438984?v=4" width="100px;" alt=""/><br /><sub><b>Walter Lara</b></sub></a><br /> </td>
 

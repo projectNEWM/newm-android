@@ -157,12 +157,13 @@ fun NFTLibraryScreenUi(
                     filters = state.filters,
                     onQueryChange = { query -> eventSink(OnQueryChange(query)) },
                     onPlaySong = { track -> eventSink(PlaySong(track)) },
-                    onDownloadSong = { trackId -> eventSink(OnDownloadTrack(trackId)) },
+                    onDownloadSong = { track -> eventSink(OnDownloadTrack(track)) },
                     refresh = { eventSink(NFTLibraryEvent.OnRefresh) },
                     refreshing = state.refreshing,
                     eventLogger = eventLogger,
                     onApplyFilters = { filters -> eventSink(OnApplyFilters(filters)) },
-                    currentTrackId = state.currentTrackId
+                    currentTrackId = state.currentTrackId,
+                    downloadsEnabled = state.downloadsEnabled,
                 )
             }
         }
@@ -180,12 +181,13 @@ private fun NFTTracks(
     filters: NFTLibraryFilters,
     onQueryChange: (String) -> Unit,
     onPlaySong: (NFTTrack) -> Unit,
-    onDownloadSong: (String) -> Unit,
+    onDownloadSong: (NFTTrack) -> Unit,
     refresh: () -> Unit,
     refreshing: Boolean,
     eventLogger: NewmAppEventLogger,
     onApplyFilters: (NFTLibraryFilters) -> Unit,
-    currentTrackId: String?
+    currentTrackId: String?,
+    downloadsEnabled: Boolean,
 ) {
     val scope = rememberCoroutineScope()
     val filterSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -240,8 +242,9 @@ private fun NFTTracks(
                             TrackRowItemWrapper(
                                 track = track,
                                 onPlaySong = onPlaySong,
-                                onDownloadSong = { onDownloadSong(track.id) },
-                                isSelected = track.id == currentTrackId
+                                onDownloadSong = { onDownloadSong(track) },
+                                isSelected = track.id == currentTrackId,
+                                downloadsEnabled = downloadsEnabled,
                             )
                         }
                     }
@@ -259,16 +262,14 @@ private fun NFTTracks(
     }
 }
 
-// TODO: Remove this flag once the download functionality is implemented
-private const val DOWNLOAD_UI_ENABLED = false
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TrackRowItemWrapper(
     track: NFTTrack,
     onPlaySong: (NFTTrack) -> Unit,
     onDownloadSong: () -> Unit,
-    isSelected: Boolean
+    isSelected: Boolean,
+    downloadsEnabled: Boolean,
 ) {
     val swipeableState = rememberSwipeableState(initialValue = false)
     val deltaX = with(LocalDensity.current) { 82.dp.toPx() }
@@ -288,13 +289,13 @@ private fun TrackRowItemWrapper(
                 ),
             )
     ) {
-        if (!track.isDownloaded && DOWNLOAD_UI_ENABLED) {
+        if (!track.isDownloaded && downloadsEnabled) {
             RevealedPanel(onDownloadSong)
         }
         TrackRowItem(
             track = track,
             onClick = onPlaySong,
-            modifier = if (DOWNLOAD_UI_ENABLED) Modifier.offset {
+            modifier = if (downloadsEnabled) Modifier.offset {
                 IntOffset(
                     x = -swipeableState.offset.value.roundToInt(),
                     y = 0
@@ -379,7 +380,8 @@ fun PreviewNftLibrary() {
                 ),
                 refreshing = false,
                 eventSink = {},
-                currentTrackId = null
+                currentTrackId = null,
+                downloadsEnabled = true,
             ),
             eventLogger = NewmAppEventLogger()
         )

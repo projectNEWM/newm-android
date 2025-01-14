@@ -17,7 +17,8 @@ sealed interface NFTLibraryState : CircuitUiState {
         val filters: NFTLibraryFilters,
         val refreshing: Boolean,
         val eventSink: (NFTLibraryEvent) -> Unit,
-        val currentTrackId: String?
+        val currentTrackId: String?,
+        val downloadsEnabled: Boolean
     ) : NFTLibraryState
 
     data class Error(val message: String) : NFTLibraryState
