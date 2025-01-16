@@ -74,10 +74,7 @@
     <string name="newm_connect_wallet_instruction_1">1. Abre tu aplicación de billetera web3 compatible con Cardano</string>
     <string name="newm_connect_wallet_instruction_2">2. Usa esta URL para conectar tu billetera</string>
     <string name="newm_connect_wallet_instruction_title">cómo conectar</string>
-    <string name="newm_download_app_landing_page" translatable="false">"https://newm.io/app/"</string>
     <string name="newm_login_logo_description">Logo de inicio de sesión de Newm</string>
-    <string name="newm_tools_connect_wallet_url" translatable="false">https://tools.newm.io/wallet-connect</string>
-    <string name="newm_tools_url" translatable="false">https://tools.newm.io</string>
     <string name="next">Siguiente</string>
     <string name="nft_library">Biblioteca NFT</string>
     <string name="nft_library_error_message">¡Vaya! Algo salió mal.</string>
