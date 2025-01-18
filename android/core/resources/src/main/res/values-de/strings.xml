@@ -115,7 +115,6 @@
     <string name="profile_unlink_dialog_message">Sind Sie sicher, dass Sie Ihre Wallet trennen möchten?</string>
     <string name="profile_unlink_dialog_title">Cardano-Wallet trennen</string>
     <string name="profile_visit_store">Record Store besuchen</string>
-    <string name="record_store">RecordStore</string>
     <string name="record_store_error_message">Es sieht so aus, als wären Sie nicht mit dem Internet verbunden. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.</string>
     <string name="record_store_error_title">Verbindung verloren</string>
     <string name="reset_password_confirm_new_password">Neues Passwort bestätigen</string>
