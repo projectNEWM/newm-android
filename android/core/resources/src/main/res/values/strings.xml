@@ -181,7 +181,7 @@
     <string name="wallet_empty_button">Visit the Record Store</string>
     <string name="wallet_empty_subtitle">You can buy NFTs from our marketplace</string>
     <string name="wallet_empty_title">No NFTs yet?</string>
-    <string name="wallet_link_camera_is_needed">NEWM needs access to your camara in order to connect a wallet</string>
+    <string name="wallet_link_camera_is_needed">NEWM needs access to your camera in order to connect a wallet</string>
     <string name="wallet_link_connected_message">Wallet connected %1$s</string>
     <string name="welcome">Hey %s 👋</string>
     <string name="welcome_to_newm">Welcome to NEWM</string>
